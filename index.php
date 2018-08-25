@@ -14,7 +14,8 @@ if (isset($_GET["folder"]))
 
     foreach (glob($path . "*", GLOB_ONLYDIR) as $filename)
     {
-        echo '<div><p class="folderLink">', $filename, '</p></div>';
+        $pieces = explode('/',$filename);
+        echo '<div><p class="folderLink">', $pieces[count($pieces)-1], '</p></div>';
     }
 
     $files = $path . "*.{mp3,ogg,wav,MP3,OGG,WAV}";
@@ -33,101 +34,142 @@ if (isset($_GET["folder"]))
 <title>Music</title>
 <meta charset="utf-8">
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">  <!--prevent favicon requests-->
+<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 <style>
-body, html{
-	height:100%;
-	margin:0;
-	padding:0;
+body{
+    height:100%;
+    margin:0;
+    padding:0;
 }
 #currentPath{
-	position:fixed;
-	text-align:center;
-	background:red;
-	width:100%;
-	height:20px;
-	top:0px;
-	z-index:100;
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:20px;
+    background-color:grey;
+    margin:5px;
+    padding:5px;
+    color:yellow;
+}
+#listContainer{
+    position:absolute;
+    top:20px;
+    bottom:0;
+    width:100%;
+    margin:0;
+    padding:0;
+    overflow:hidden;
 }
 #navList{
-	position:absolute;
-	top:20px;
-	padding:0 0 80px;
-	width:100%;
-}
-#playerArea{
-	height:80px;
-	width:100%;
-	clear:both;
-	position:fixed;
-	bottom:0;
-}
-#songTitle{
-	height:20px;
-	background:red;
-	margin:0;
-	padding:0;
-	text-align:center;
-}
-#player{
-	height:60px;
-	background:#6cf;
-	width:100%;
-	margin:0;
-}
-#upLink, .fileLink, .folderLink{
-	cursor:pointer;
-	margin:5px;
-	padding:5px;
-	background-color:grey;
-	color:yellow;
-}
-.fileLink{
-	color:white;
-}
-#upLink:hover, .fileLink:hover, .folderLink:hover{
-	background-color:black;
+    position:absolute;
+    top:20px;
+    left:0;
+    bottom:80px;
+    width:50%;
+    overflow-y:scroll;
+    float:left;
 }
 #playList{
-	position:fixed;
-	right:0;
-	width:30%;
-	color:blue;
-	z-index:100;
-	//height:100%;
-	bottom:80px;
-	top:20px;
-	background-color:green;
+    position:absolute;
+    top:20px;
+    right:0;
+    bottom:80px;
+    width:50%;
+    overflow-y:scroll;
+    float:left;
+}
+#playerArea{
+    position:absolute;
+    bottom:0;
+    height:80px;
+    left:0;
+    right:0;
+}
+#songTitle{
+    height:20px;
+    background:red;
+    margin:0;
+    padding:0;
+    text-align:center;
+}
+audio{
+    margin:0;
+    padding:0;
+    width:100%;
+}
+#upLink, .fileLink, .folderLink{
+    cursor:pointer;
+    margin:5px;
+    padding:5px;
+    background-color:grey;
+    color:yellow;
+}
+.fileLink{
+    color:white;
+}
+#upLink:hover, .fileLink:hover, .folderLink:hover{
+    background-color:black;
+}
+.playListLink{
+    position:relative;
+    cursor:pointer;
+    margin:5px;
+    padding:5px;
+    background-color:grey;
+    color:white;
+    white-space: nowrap;
+    overflow:hidden;
 }
 </style>
-<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 </head>
 <body>
+<div id="currentPath"></div>
+<div id="listContainer">
+    <div id="navList"></div>
+    <div id="playList"></div>
+</div>
+<div id="playerArea">
+    <p id="songTitle"></p>
+    <audio controls autoplay id="player">
+    Your browser does not support the audio element.
+    </audio>
+</div>
 <script>
-function isPlaying(player) { return !player.paused || player.currentTime; }
-
 $( document ).ready( function()
 {
     const scriptUrl = '?folder=';
     var currentFolder = '';
+    var currentSong = 0;
 
-    //console.log( isPlaying( player ) );
     $( '#navList').load( scriptUrl );
 
     $('body').on('click','.folderLink',function()
     {
-        $( '#navList').load( scriptUrl + encodeURI($(this).text()) );
-        currentFolder = $(this).text();
+        if ( currentFolder )
+             currentFolder += '/';
+        currentFolder += $(this).text();
         $('#currentPath').html(currentFolder);
-        console.log('Folder clicked - current path: '+ currentFolder);
+        $( '#navList').load( scriptUrl + encodeURI(currentFolder) );
     });
 
     $('body').on('click','.fileLink',function()
     {
-        var fileToPlay = currentFolder + '/' + $(this).text();
-        $('#songTitle').html(fileToPlay);
-        $('#player').attr('src', fileToPlay );
-        console.log('Starting to play: ',fileToPlay);
-    });
+        var fileToPlay;
+        if ( currentFolder )
+             fileToPlay = currentFolder + '/' + $(this).text();
+        else
+             fileToPlay = $(this).text();
+        if ( player.paused )
+        {
+            $('#playList').append('<p class="playListLink">'+$(this).text()+'</p><p class="location" style="display:none;">' + currentFolder + '</p>');
+            $('#player').attr('src', fileToPlay );
+            console.log('Starting to play: ',fileToPlay);
+        }
+        else
+            $('#playList').append('<p class="playListLink">'+$(this).text()+'</p><p class="location" style="display:none;">' + currentFolder + '</p>');
+        $('.playListLink').css('background-color', 'grey');
+        $('.playListLink').eq(currentSong).css('background-color', 'black');     });
 
     $('body').on('click','#upLink',function()
     {
@@ -135,25 +177,27 @@ $( document ).ready( function()
             currentFolder = currentFolder.split( '/' ).slice( 0, -1 ).join( '/' );
         else
             currentFolder = '';
-
         $('#navList').load( scriptUrl + encodeURI(currentFolder) );
         $('#currentPath').html(currentFolder);
-        console.log('Uplink clicked - current path: '+ currentFolder);
+    });
+
+    $('body').on('click','.playListLink',function()
+    {
+        currentSong = $(this).index('.playListLink');
+        player.src = $('.location' ).eq(currentSong).text() + '/' + $('.playListLink' ).eq(currentSong).text();
+        $('.playListLink').css('background-color', 'grey');
+        $('.playListLink').eq(currentSong).css('background-color', 'black');    });
+
+    player.addEventListener('ended',function(e)
+    {
+        currentSong++;
+        var nextSong = $('.location').eq( currentSong ).text() + '/' + $('.playListLink').eq( currentSong ).text();
+        console.log( nextSong );
+        $('.playListLink').css('background-color', 'grey');
+        $('.playListLink').eq(currentSong).css('background-color', 'black');
+        $('#player').attr('src', nextSong );
     });
 });
 </script>
-<div id="currentPath"></div>
-<div id="navList"></div>
-<div id="playerArea">
-	<p id="songTitle"></p>
-	<audio controls autoplay id="player">
-	Your browser does not support the audio element.
-	</audio>
-</div>
-<div id="playList">
-	<p style="margin:5px;padding:5px;text-align:center;color:yellow;">PlayList</p>
-	<div id="playListSongs">
-	</div>
-</div>
 </body>
 </html>
