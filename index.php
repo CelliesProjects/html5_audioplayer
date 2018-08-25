@@ -47,7 +47,7 @@ body{
     left:0;
     right:0;
     height:20px;
-    background-color:grey;
+    background-color:#8c1b1b;
     margin:5px;
     padding:5px;
     color:yellow;
@@ -155,21 +155,18 @@ $( document ).ready( function()
 
     $('body').on('click','.fileLink',function()
     {
-        var fileToPlay;
-        if ( currentFolder )
-             fileToPlay = currentFolder + '/' + $(this).text();
-        else
-             fileToPlay = $(this).text();
+        $('#playList').append('<p class="playListLink">'+$(this).text()+'</p><p class="location" style="display:none;">' + currentFolder + '</p>');
         if ( player.paused )
         {
-            $('#playList').append('<p class="playListLink">'+$(this).text()+'</p><p class="location" style="display:none;">' + currentFolder + '</p>');
-            $('#player').attr('src', fileToPlay );
-            console.log('Starting to play: ',fileToPlay);
+            if ( currentFolder )
+                 player.src = currentFolder + '/' + $(this).text();
+            else
+                 player.src = $(this).text();
+            currentSong = $('.playListLink').length-1;
+            $('.playListLink').css('background-color', 'grey');
+            $('.playListLink').eq(currentSong).css('background-color', 'black');
         }
-        else
-            $('#playList').append('<p class="playListLink">'+$(this).text()+'</p><p class="location" style="display:none;">' + currentFolder + '</p>');
-        $('.playListLink').css('background-color', 'grey');
-        $('.playListLink').eq(currentSong).css('background-color', 'black');     });
+    });
 
     $('body').on('click','#upLink',function()
     {
