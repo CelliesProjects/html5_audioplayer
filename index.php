@@ -142,6 +142,12 @@ $( document ).ready( function()
     var currentFolder = '';
     var currentSong = 0;
 
+    function updatePlayList()
+    {
+        $('.playListLink').css('background-color', 'grey');
+        $('.playListLink').eq(currentSong).css('background-color', 'black');
+    }
+
     $( '#navList').load( scriptUrl );
 
     $('body').on('click','.folderLink',function()
@@ -163,8 +169,7 @@ $( document ).ready( function()
             else
                  player.src = $(this).text();
             currentSong = $('.playListLink').length-1;
-            $('.playListLink').css('background-color', 'grey');
-            $('.playListLink').eq(currentSong).css('background-color', 'black');
+            updatePlayList();
         }
     });
 
@@ -182,17 +187,14 @@ $( document ).ready( function()
     {
         currentSong = $(this).index('.playListLink');
         player.src = $('.location' ).eq(currentSong).text() + '/' + $('.playListLink' ).eq(currentSong).text();
-        $('.playListLink').css('background-color', 'grey');
-        $('.playListLink').eq(currentSong).css('background-color', 'black');    });
+        updatePlayList();
+    });
 
     player.addEventListener('ended',function(e)
     {
         currentSong++;
-        var nextSong = $('.location').eq( currentSong ).text() + '/' + $('.playListLink').eq( currentSong ).text();
-        console.log( nextSong );
-        $('.playListLink').css('background-color', 'grey');
-        $('.playListLink').eq(currentSong).css('background-color', 'black');
-        $('#player').attr('src', nextSong );
+        player.src = $('.location').eq( currentSong ).text() + '/' + $('.playListLink').eq( currentSong ).text();
+        updatePlayList();
     });
 });
 </script>
