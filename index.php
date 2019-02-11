@@ -3,9 +3,9 @@ if (isset($_GET["folder"]))
 {
     $path = htmlspecialchars($_GET["folder"]);
 
-    if ( strpos( $path, ".." ) !== false ) die();
+    if ( strpos( $path, ".." ) !== false ) die();         //no folder traversing
 
-    if ( substr( $path, 0, 1 ) === "/" ) $path = '';
+    if ( substr( $path, 0, 1 ) === "/" ) $path = '';      //no root folder access
 
     if ($path <> '') {
       $path = $path.'/';
@@ -27,8 +27,19 @@ if (isset($_GET["folder"]))
     }
     die();
 }
-?>
-<!doctype HTML>
+// icons are found at https://material.io/tools/icons/?icon=delete_outline&style=baseline
+if (isset($_GET["icon"]))
+{
+    $icon = htmlspecialchars($_GET["icon"]);
+    if ($icon == "delete")
+    {
+        header( "Content-Type: image/svg+xml" );
+        echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/><path fill="none" d="M0 0h24v24H0V0z"/></svg>';
+        die();
+    }
+}
+if ( count($_GET) ) die('ERROR unknown request.');
+?><!doctype HTML>
 <html lang="en">
 <head>
 <title>Music</title>
@@ -36,8 +47,16 @@ if (isset($_GET["folder"]))
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">  <!--prevent favicon requests-->
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 <style>
+
+html{
+    height: 100%;
+    width: 100%;
+    margin:0;
+    padding:0;
+}
 body{
     height:100%;
+    min-height:100%;
     margin:0;
     padding:0;
 }
@@ -120,6 +139,28 @@ audio{
     color:white;
     white-space: nowrap;
     overflow:hidden;
+    display: flex;
+    align-items: center; /* align vertical */
+}
+#playListContextMenu{
+    position:relative;
+    color:black;
+    background-color:red;
+    border:solid 1px black
+}
+.vertical-center{
+    background-color:red;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+.deleteButton{
+    background-color:red;
+    margin:0 15px;
+    width:24px;
+    height:24px;
 }
 </style>
 </head>
@@ -161,7 +202,7 @@ $( document ).ready( function()
 
     $('body').on('click','.fileLink',function()
     {
-        $('#playList').append('<p class="playListLink">'+$(this).text()+'</p><p class="location" style="display:none;">' + currentFolder + '</p>');
+        $('#playList').append('<p class="playListLink" data-path="'+currentFolder+'"><img class="deleteButton" src="?icon=delete">'+$(this).text()+'</p>');
         if ( player.paused )
         {
             if ( currentFolder )
@@ -186,16 +227,34 @@ $( document ).ready( function()
     $('body').on('click','.playListLink',function()
     {
         currentSong = $(this).index('.playListLink');
-        player.src = $('.location' ).eq(currentSong).text() + '/' + $('.playListLink' ).eq(currentSong).text();
+        player.src = encodeURI( $(this).data('path') + '/' + $(this).text() );
         updatePlayList();
     });
 
-    player.addEventListener('ended',function(e)
+    player.addEventListener('ended',function()
     {
         currentSong++;
-        player.src = $('.location').eq( currentSong ).text() + '/' + $('.playListLink').eq( currentSong ).text();
+        player.src = $('.playListLink').eq( currentSong ).data('path') + '/' + $('.playListLink').eq( currentSong ).text();
         updatePlayList();
     });
+
+    $('body').on('click','.deleteButton',function(event)
+    {
+        event.stopPropagation();
+        if ( currentSong == $(this).parent().index() )
+        {
+            player.pause();
+            player.src = '';
+            currentSong = undefined;
+        }
+        $(this).parent().remove();
+        if ( currentSong > $(this).parent().index() )
+        {
+            currentSong--;
+        }
+        updatePlayList;
+    });
+
 });
 </script>
 </body>
