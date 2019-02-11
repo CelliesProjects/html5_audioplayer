@@ -65,57 +65,28 @@ body{
     top:0;
     left:0;
     right:0;
-    height:20px;
+    height:30px;
     background-color:#8c1b1b;
-    margin:5px;
-    padding:5px;
+    padding:5px 15px;
     color:yellow;
-}
-#listContainer{
-    position:absolute;
-    top:20px;
-    bottom:0;
-    width:100%;
-    margin:0;
-    padding:0;
-    overflow:hidden;
+    display: flex;
+    align-items: center; /* align vertical */
 }
 #navList{
     position:absolute;
-    top:20px;
+    top:40px;
     left:0;
-    bottom:80px;
+    bottom:50px;
     width:50%;
     overflow-y:scroll;
-    float:left;
 }
 #playList{
     position:absolute;
-    top:20px;
+    top:40px;
     right:0;
-    bottom:80px;
+    bottom:50px;
     width:50%;
     overflow-y:scroll;
-    float:left;
-}
-#playerArea{
-    position:absolute;
-    bottom:0;
-    height:80px;
-    left:0;
-    right:0;
-}
-#songTitle{
-    height:20px;
-    background:red;
-    margin:0;
-    padding:0;
-    text-align:center;
-}
-audio{
-    margin:0;
-    padding:0;
-    width:100%;
 }
 #upLink, .fileLink, .folderLink{
     cursor:pointer;
@@ -142,12 +113,6 @@ audio{
     display: flex;
     align-items: center; /* align vertical */
 }
-#playListContextMenu{
-    position:relative;
-    color:black;
-    background-color:red;
-    border:solid 1px black
-}
 .vertical-center{
     background-color:red;
     margin: 0;
@@ -161,27 +126,32 @@ audio{
     margin:0 15px;
     width:24px;
     height:24px;
+    display:inline-block;
+}
+audio {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    margin:0;
+    padding:0;
 }
 </style>
 </head>
 <body>
 <div id="currentPath"></div>
-<div id="listContainer">
-    <div id="navList"></div>
-    <div id="playList"></div>
-</div>
-<div id="playerArea">
-    <p id="songTitle"></p>
-    <audio controls autoplay id="player">
-    Your browser does not support the audio element.
-    </audio>
-</div>
+<div id="navList"></div>
+<div id="playList"></div>
+<audio controls autoplay id="player">
+Your browser does not support the audio element.
+</audio>
 <script>
 $( document ).ready( function()
 {
     const scriptUrl = '?folder=';
     var currentFolder = '';
     var currentSong = 0;
+
+    $('#navList, #playList').css({"bottom":$('#player').height()});
 
     function updatePlayList()
     {
