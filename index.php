@@ -7,15 +7,22 @@ if (isset($_GET["folder"]))
 
     if ( substr( $path, 0, 1 ) === "/" ) $path = '';      //no root folder access
 
+
     if ($path <> '') {
       $path = $path.'/';
-      echo '<div><p id="upLink">BACK</p></div>';
+      if (!file_exists($path))
+      {
+          header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found", true, 404);
+          echo "Requested resource could not be found.";
+          die();
+      }
+      echo '<div id="upLink"><img class="folderIcon" src="?icon=folderup"></div>';
     }
 
     foreach (glob($path . "*", GLOB_ONLYDIR) as $filename)
     {
         $pieces = explode('/',$filename);
-        echo '<div><p class="folderLink">', $pieces[count($pieces)-1], '</p></div>';
+        echo '<div class="folderLink"><img class="folderIcon" src="?icon=folderdown">', $pieces[count($pieces)-1], '</div>';
     }
 
     $files = $path . "*.{mp3,ogg,wav,MP3,OGG,WAV}";
@@ -23,11 +30,11 @@ if (isset($_GET["folder"]))
     foreach (glob($files, GLOB_BRACE) as $filename)
     {
         $pieces = explode('/',$filename);
-        echo '<div><p class="fileLink">', $pieces[count($pieces)-1], '</p></div>';
+        echo '<div class="fileLink"><img class="folderIcon saveButton" src="?icon=save">', $pieces[count($pieces)-1], '</div>';
     }
     die();
 }
-// icons are found at https://material.io/tools/icons/?icon=delete_outline&style=baseline
+
 if (isset($_GET["icon"]))
 {
     $icon = htmlspecialchars($_GET["icon"]);
@@ -35,6 +42,28 @@ if (isset($_GET["icon"]))
     {
         header( "Content-Type: image/svg+xml" );
         echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/><path fill="none" d="M0 0h24v24H0V0z"/></svg>';
+        // This icon is found at https://material.io/tools/icons/?icon=delete_outline&style=baseline
+        die();
+    }
+    if ($icon == "folderup")
+    {
+        header( "Content-Type: image/svg+xml" );
+        echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M11 9l1.42 1.42L8.83 14H18V4h2v12H8.83l3.59 3.58L11 21l-6-6 6-6z"/></svg>';
+        // This icon is found at https://material.io/tools/icons/?icon=subdirectory_arrow_left&style=baseline
+        die();
+    }
+    if ($icon == "folderdown")
+    {
+        header( "Content-Type: image/svg+xml" );
+        echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M19 15l-6 6-1.42-1.42L15.17 16H4V4h2v10h9.17l-3.59-3.58L13 9l6 6z"/></svg>';
+        // This icon is found at https://material.io/tools/icons/?icon=subdirectory_arrow_right&style=baseline
+        die();
+    }
+    if ($icon == "save")
+    {
+        header( "Content-Type: image/svg+xml" );
+        echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>';
+        // This icon is found at https://material.io/tools/icons/?icon=save&style=baseline
         die();
     }
 }
@@ -44,15 +73,18 @@ if ( count($_GET) ) die('ERROR unknown request.');
 <head>
 <title>Music</title>
 <meta charset="utf-8">
+<meta name="viewport" content="minimal-ui, width=device-width, initial-scale=.7, maximum-scale=.7, user-scalable=no">
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">  <!--prevent favicon requests-->
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">  <!-- https://fonts.google.com/specimen/Roboto?selection.family=Roboto -->
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 <style>
-
 html{
     height: 100%;
     width: 100%;
     margin:0;
     padding:0;
+    font-family: 'Roboto', sans-serif;
+    font-size:x-large;
 }
 body{
     height:100%;
@@ -71,6 +103,7 @@ body{
     color:yellow;
     display: flex;
     align-items: center; /* align vertical */
+    font-size:larger;
 }
 #navList{
     position:absolute;
@@ -94,6 +127,10 @@ body{
     padding:5px;
     background-color:grey;
     color:yellow;
+    white-space: nowrap;
+    overflow:hidden;
+    display: flex;
+    align-items: center; /* align vertical */
 }
 .fileLink{
     color:white;
@@ -113,22 +150,13 @@ body{
     display: flex;
     align-items: center; /* align vertical */
 }
-.vertical-center{
-    background-color:red;
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-}
-.deleteButton{
+.deleteButton, .folderIcon{
     background-color:red;
     margin:0 15px;
-    width:24px;
-    height:24px;
+    min-width:40px;
     display:inline-block;
 }
-audio {
+#player {
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -141,33 +169,45 @@ audio {
 <div id="currentPath"></div>
 <div id="navList"></div>
 <div id="playList"></div>
-<audio controls autoplay id="player">
-Your browser does not support the audio element.
-</audio>
+<audio controls autoplay id="player">Your browser does not support the audio element.</audio>
 <script>
 $( document ).ready( function()
 {
     const scriptUrl = '?folder=';
     var currentFolder = '';
-    var currentSong = 0;
-
-    $('#navList, #playList').css({"bottom":$('#player').height()});
+    var currentSong = undefined;
 
     function updatePlayList()
     {
         $('.playListLink').css('background-color', 'grey');
-        $('.playListLink').eq(currentSong).css('background-color', 'black');
+        if ( currentSong !== undefined )
+            $('.playListLink').eq(currentSong).css('background-color', 'black');
     }
+
+    $('#navList, #playList').css({"bottom":$('#player').height()});
 
     $( '#navList').load( scriptUrl );
 
     $('body').on('click','.folderLink',function()
     {
-        if ( currentFolder )
-             currentFolder += '/';
+        var oldFolder = currentFolder; //save currentFolder for .fail callback
+        if ( currentFolder ) currentFolder += '/';
         currentFolder += $(this).text();
-        $('#currentPath').html(currentFolder);
-        $( '#navList').load( scriptUrl + encodeURI(currentFolder) );
+        console.log("currentFolder: "+currentFolder);
+        $.get( scriptUrl + encodeURI(currentFolder), function() {
+          //alert( "success" );
+        })
+          .done(function(data) {
+            $('#currentPath').html(currentFolder);
+            $('#navList').html(data);
+          })
+          .fail(function() {
+            $('#currentPath').html("ERROR! Unable to access "+currentFolder);
+            currentFolder = oldFolder;
+          })
+          .always(function() {
+            //alert( "finished" );
+          });
     });
 
     $('body').on('click','.fileLink',function()
@@ -179,6 +219,7 @@ $( document ).ready( function()
                  player.src = currentFolder + '/' + $(this).text();
             else
                  player.src = $(this).text();
+
             currentSong = $('.playListLink').length-1;
             updatePlayList();
         }
@@ -203,8 +244,15 @@ $( document ).ready( function()
 
     player.addEventListener('ended',function()
     {
-        currentSong++;
-        player.src = $('.playListLink').eq( currentSong ).data('path') + '/' + $('.playListLink').eq( currentSong ).text();
+        if ( currentSong < $('.playListLink').length-1 )
+        {
+            currentSong++;
+            player.src = $('.playListLink').eq( currentSong ).data('path') + '/' + $('.playListLink').eq( currentSong ).text();
+            updatePlayList();
+            return;
+        }
+        player.src='';
+        currentSong = undefined;
         updatePlayList();
     });
 
@@ -223,6 +271,19 @@ $( document ).ready( function()
             currentSong--;
         }
         updatePlayList;
+    });
+
+    $('body').on('click','.saveButton',function(event)
+    {
+        const a = document.createElement("a");
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.href = currentFolder+'/'+$(this).parent().text();
+        a.setAttribute("download", $(this).parent().text());
+        a.click();
+        window.URL.revokeObjectURL(a.href);
+        document.body.removeChild(a);        
+        event.stopPropagation();
     });
 
 });
