@@ -79,7 +79,6 @@ if ( count($_GET) ) die('ERROR unknown request.');
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 <style>
 html{
-    height: 100%;
     width: 100%;
     margin:0;
     padding:0;
@@ -87,10 +86,10 @@ html{
     font-size:x-large;
 }
 body{
-    height:100%;
     min-height:100%;
     margin:0;
     padding:0;
+    background:darkgray;
 }
 #currentPath{
     position:absolute;
@@ -109,22 +108,19 @@ body{
     position:absolute;
     top:40px;
     left:0;
-    bottom:50px;
     width:50%;
-    overflow-y:scroll;
+    overflow-y:auto;
 }
 #playList{
     position:absolute;
     top:40px;
     right:0;
-    bottom:50px;
     width:50%;
-    overflow-y:scroll;
+    overflow-y:auto;
 }
 #upLink, .fileLink, .folderLink{
     cursor:pointer;
-    margin:5px;
-    padding:5px;
+    margin:5px 0;
     background-color:grey;
     color:yellow;
     white-space: nowrap;
@@ -141,8 +137,7 @@ body{
 .playListLink{
     position:relative;
     cursor:pointer;
-    margin:5px;
-    padding:5px;
+    margin:5px 0;
     background-color:grey;
     color:white;
     white-space: nowrap;
@@ -152,9 +147,8 @@ body{
 }
 .deleteButton, .folderIcon{
     background-color:red;
-    margin:0 15px;
+    margin:0 15px 0 0;
     min-width:40px;
-    display:inline-block;
 }
 #player {
     position: absolute;
@@ -190,16 +184,16 @@ $( document ).ready( function()
 
     $('body').on('click','.folderLink',function()
     {
+        $('#currentPath').html("Loading...");
         var oldFolder = currentFolder; //save currentFolder for .fail callback
         if ( currentFolder ) currentFolder += '/';
         currentFolder += $(this).text();
-        console.log("currentFolder: "+currentFolder);
         $.get( scriptUrl + encodeURI(currentFolder), function() {
           //alert( "success" );
         })
           .done(function(data) {
             $('#currentPath').html(currentFolder);
-            $('#navList').html(data);
+            $('#navList').html(data).scrollTop(0);
           })
           .fail(function() {
             $('#currentPath').html("ERROR! Unable to access "+currentFolder);
@@ -227,11 +221,13 @@ $( document ).ready( function()
 
     $('body').on('click','#upLink',function()
     {
+        $('#currentPath').html("Loading...");
         if ( currentFolder.includes('/') )
             currentFolder = currentFolder.split( '/' ).slice( 0, -1 ).join( '/' );
         else
             currentFolder = '';
-        $('#navList').load( scriptUrl + encodeURI(currentFolder) );
+
+        $('#navList').load( scriptUrl + encodeURI(currentFolder));
         $('#currentPath').html(currentFolder);
     });
 
@@ -265,11 +261,11 @@ $( document ).ready( function()
             player.src = '';
             currentSong = undefined;
         }
-        $(this).parent().remove();
         if ( currentSong > $(this).parent().index() )
         {
             currentSong--;
         }
+        $(this).parent().remove();
         updatePlayList;
     });
 
@@ -282,7 +278,7 @@ $( document ).ready( function()
         a.setAttribute("download", $(this).parent().text());
         a.click();
         window.URL.revokeObjectURL(a.href);
-        document.body.removeChild(a);        
+        document.body.removeChild(a);
         event.stopPropagation();
     });
 
