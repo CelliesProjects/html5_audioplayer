@@ -1,5 +1,5 @@
 # html5_audioplayer
-A simple html5 audio player.
+A simple single file html5 audio player.
 
 ### You will need:
 - A working webserver with PHP enabled. 
