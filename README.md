@@ -18,6 +18,6 @@ With Apache 2.4, easiest setup is to symlink `htdocs` to the folder where you ke
 <br>Copy `index.php` to this folder and you should be good to go.
 
 ### Disclaimer:
-- The used icons are from [https://material.io/tools/icons/?style=baseline](material.io).
-- Uses [https://fonts.google.com/specimen/Roboto](Google Roboto font)
-- Uses [https://code.jquery.com/jquery-3.2.1.js](jQuery 3.2.1.)
+- The used icons are from [material.io](https://material.io/tools/icons/?style=baseline).
+- Uses [Google Roboto font](https://fonts.google.com/specimen/Roboto)
+- Uses [jQuery 3.2.1](https://code.jquery.com/jquery-3.2.1.js).
