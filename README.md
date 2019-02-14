@@ -17,3 +17,7 @@ Just drop `index.php` in a folder containing MP3s, OGG or WAV files.
 With Apache 2.4, easiest setup is to symlink `htdocs` to the folder where you keep your music files.
 <br>Copy `index.php` to this folder and you should be good to go.
 
+### Disclaimer:
+- The used icons are from [https://material.io/tools/icons/?style=baseline](material.io).
+- Uses [https://fonts.google.com/specimen/Roboto](Google Roboto font)
+- Uses [https://code.jquery.com/jquery-3.2.1.js](jQuery 3.2.1.)
