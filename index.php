@@ -169,6 +169,7 @@ $( document ).ready( function()
 {
     const scriptUrl = '?folder=';
     var currentFolder = '';
+    var tempFolder;
     var currentSong = undefined;
 
     function updatePlayList()
@@ -178,16 +179,8 @@ $( document ).ready( function()
             $('.playListLink').eq(currentSong).css('background-color', 'black');
     }
 
-    $('#navList, #playList').css({"bottom":$('#player').height()});
-
-    $( '#navList').load( scriptUrl );
-
-    $('body').on('click','.folderLink',function()
+    function updateNavList()
     {
-        $('#currentPath').html("Loading...");
-        var oldFolder = currentFolder; //save currentFolder for .fail callback
-        if ( currentFolder ) currentFolder += '/';
-        currentFolder += $(this).text();
         $.get( scriptUrl + encodeURI(currentFolder), function() {
           //alert( "success" );
         })
@@ -197,11 +190,35 @@ $( document ).ready( function()
           })
           .fail(function() {
             $('#currentPath').html("ERROR! Unable to access "+currentFolder);
-            currentFolder = oldFolder;
+            currentFolder = tempFolder;
           })
           .always(function() {
             //alert( "finished" );
           });
+    };
+
+    $('#navList, #playList').css({"bottom":$('#player').height()});
+
+    $( '#navList').load( scriptUrl );
+
+    $('body').on('click','#upLink',function()
+    {
+        $('#currentPath').html("Loading...");
+        if ( currentFolder.includes('/') )
+            currentFolder = currentFolder.split( '/' ).slice( 0, -1 ).join( '/' );
+        else
+            currentFolder = '';
+
+        updateNavList();
+    });
+
+    $('body').on('click','.folderLink',function()
+    {
+        $('#currentPath').html("Loading...");
+        tempFolder = currentFolder; //save currentFolder for .fail callback
+        if ( currentFolder ) currentFolder += '/';
+        currentFolder += $(this).text();
+        updateNavList();
     });
 
     $('body').on('click','.fileLink',function()
@@ -217,18 +234,6 @@ $( document ).ready( function()
             currentSong = $('.playListLink').length-1;
             updatePlayList();
         }
-    });
-
-    $('body').on('click','#upLink',function()
-    {
-        $('#currentPath').html("Loading...");
-        if ( currentFolder.includes('/') )
-            currentFolder = currentFolder.split( '/' ).slice( 0, -1 ).join( '/' );
-        else
-            currentFolder = '';
-
-        $('#navList').load( scriptUrl + encodeURI(currentFolder));
-        $('#currentPath').html(currentFolder);
     });
 
     $('body').on('click','.playListLink',function()
