@@ -248,7 +248,7 @@ $( document ).ready( function()
         if ( currentSong < $('.playListLink').length-1 )
         {
             currentSong++;
-            player.src = $('.playListLink').eq( currentSong ).data('path') + '/' + $('.playListLink').eq( currentSong ).text();
+            player.src = encodeURI( $('.playListLink').eq( currentSong ).data('path') + '/' + $('.playListLink').eq( currentSong ).text() );
             updatePlayList();
             return;
         }
