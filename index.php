@@ -1,12 +1,12 @@
 <?php
+error_reporting(E_ALL);
 if (isset($_GET["folder"]))
 {
-    $path = htmlspecialchars($_GET["folder"]);
+    $path = rawurldecode($_GET["folder"]);
 
     if ( strpos( $path, ".." ) !== false ) die();         //no folder traversing
 
     if ( substr( $path, 0, 1 ) === "/" ) $path = '';      //no root folder access
-
 
     if ($path <> '') {
       $path = $path.'/';
@@ -21,8 +21,15 @@ if (isset($_GET["folder"]))
 
     foreach (glob($path . "*", GLOB_ONLYDIR) as $filename)
     {
+        echo '<div class="folderLink">';
         $pieces = explode('/',$filename);
-        echo '<div class="folderLink"><img class="folderIcon" src="?icon=folderdown">', $pieces[count($pieces)-1], '</div>';
+        if ( glob($filename.'/*.{mp3,ogg,wav,MP3,OGG,WAV}', GLOB_BRACE) )
+            echo '<img class="folderIcon addFolder" src="?icon=addfolder">';
+        else
+            echo '<img class="folderIcon" src="">';
+
+        echo $pieces[count($pieces)-1];
+        echo '</div>';
     }
 
     $files = $path . "*.{mp3,ogg,wav,MP3,OGG,WAV}";
@@ -66,12 +73,19 @@ if (isset($_GET["icon"]))
         // This icon is found at https://material.io/tools/icons/?icon=save&style=baseline
         die();
     }
+    if ($icon == "addfolder")
+    {
+        header( "Content-Type: image/svg+xml" );
+        echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M14 10H2v2h12v-2zm0-4H2v2h12V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM2 16h8v-2H2v2z"/></svg>';
+        // This icon is found at https://material.io/tools/icons/?icon=playlist_add&style=baseline
+        die();
+    }
 }
 if ( count($_GET) ) die('ERROR unknown request.');
 ?><!doctype HTML>
 <html lang="en">
 <head>
-<title>Music</title>
+<title><?php $_SERVER['HTTP_HOST'] ?></title>
 <meta charset="utf-8">
 <meta name="viewport" content="minimal-ui, width=device-width, initial-scale=.7, maximum-scale=.7, user-scalable=no">
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">  <!--prevent favicon requests-->
@@ -149,6 +163,7 @@ body{
     background-color:red;
     margin:0 15px 0 0;
     min-width:40px;
+    min-height:40px;
 }
 #player {
     position: absolute;
@@ -157,12 +172,21 @@ body{
     margin:0;
     padding:0;
 }
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
 </style>
 </head>
 <body>
-<div id="currentPath"></div>
-<div id="navList"></div>
-<div id="playList"></div>
+<div id="currentPath" class="noselect"></div>
+<div id="navList" class="noselect"></div>
+<div id="playList" class="noselect"></div>
 <audio controls autoplay id="player">Your browser does not support the audio element.</audio>
 <script>
 $( document ).ready( function()
@@ -181,7 +205,7 @@ $( document ).ready( function()
 
     function updateNavList()
     {
-        $.get( scriptUrl + encodeURI(currentFolder), function() {
+        $.get( scriptUrl + currentFolder, function() {
           //alert( "success" );
         })
           .done(function(data) {
@@ -287,6 +311,39 @@ $( document ).ready( function()
         event.stopPropagation();
     });
 
+    $('body').on('click','.addFolder',function(event)
+    {
+        var folderToAdd = '';
+        if ( currentFolder ) folderToAdd = currentFolder+'/';
+        folderToAdd += $(this).parent().text();
+        $.get( scriptUrl+folderToAdd, function(data) {
+          //alert( "success" );
+        })
+          .done(function(data) {
+            //make an invisible navList
+            const nList = document.createElement("div");
+            nList.style.display = "none";
+            nList.id = "invisFolder";
+            document.body.appendChild(nList);
+            $(nList).html(data);
+
+            //add each .fileLink from the invisible navList
+            var songBeforeAdd = $('.playListLink').length;
+            $("#invisFolder .fileLink").each(function( index ) {
+              $('#playList').append('<p class="playListLink" data-path="'+folderToAdd+'"><img class="deleteButton" src="?icon=delete">'+$(this).text()+'</p>');
+            });
+            document.body.removeChild(nList);
+
+            if ( player.paused) $('.playListLink').eq(songBeforeAdd).click();
+          })
+          .fail(function() {
+            $('#currentPath').html("ERROR! Unable to preview "+folderToAdd);
+          })
+          .always(function() {
+            //alert( "finished" );
+          });
+        event.stopPropagation();
+    });
 });
 </script>
 </body>
