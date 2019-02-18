@@ -45,32 +45,33 @@ if(isset($_GET["folder"]))
 if(isset($_GET["icon"]))
 {
   $icon=htmlspecialchars($_GET["icon"]);
+  $header="Content-Type: image/svg+xml";
   if($icon=="delete")
   {
-    header( "Content-Type: image/svg+xml" );
+    header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/><path fill="none" d="M0 0h24v24H0V0z"/></svg>';
-    // This icon is found at https://material.io/tools/icons/?icon=delete_outline&style=baseline
+    //https://material.io/tools/icons/?icon=delete_outline&style=baseline
     die();
   }
   if($icon=="folderup")
   {
-    header( "Content-Type: image/svg+xml" );
+    header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M11 9l1.42 1.42L8.83 14H18V4h2v12H8.83l3.59 3.58L11 21l-6-6 6-6z"/></svg>';
-    // This icon is found at https://material.io/tools/icons/?icon=subdirectory_arrow_left&style=baseline
+    //https://material.io/tools/icons/?icon=subdirectory_arrow_left&style=baseline
     die();
   }
   if($icon=="save")
   {
-    header( "Content-Type: image/svg+xml" );
+    header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>';
-    // This icon is found at https://material.io/tools/icons/?icon=save&style=baseline
+    //https://material.io/tools/icons/?icon=save&style=baseline
     die();
   }
   if($icon=="addfolder")
   {
-    header( "Content-Type: image/svg+xml" );
+    header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M14 10H2v2h12v-2zm0-4H2v2h12V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM2 16h8v-2H2v2z"/></svg>';
-    // This icon is found at https://material.io/tools/icons/?icon=playlist_add&style=baseline
+    //https://material.io/tools/icons/?icon=playlist_add&style=baseline
     die();
   }
 }
@@ -188,6 +189,7 @@ $(document).ready( function()
   var currentFolder='';
   var tempFolder;
   var currentSong=undefined;
+  var player=document.getElementById('player');
 
   function updatePlayList()
   {
@@ -282,13 +284,11 @@ $(document).ready( function()
       player.pause();
       player.src='';
       currentSong=undefined;
-
-      if(currentSong>$(this).parent().index())
-        currentSong--;
-
-      $(this).parent().remove();
-      updatePlayList;
     }
+    if(currentSong>$(this).parent().index())
+      currentSong--;
+    $(this).parent().remove();
+    updatePlayList;
   });
 
   $('body').on('click','.saveButton',function(event)
@@ -319,14 +319,12 @@ $(document).ready( function()
         nList.id="invisFolder";
         document.body.appendChild(nList);
         $(nList).html(data);
-
         //add each .fileLink from the invisible navList
         var songBeforeAdd=$('.playListLink').length;
         $("#invisFolder .fileLink").each(function(index){
           $('#playList').append('<p class="playListLink" data-path="'+folderToAdd+'"><img class="deleteButton" src="?icon=delete">'+$(this).text()+'</p>');
         });
         document.body.removeChild(nList);
-
         if(player.paused) $('.playListLink').eq(songBeforeAdd).click();
       })
       .fail(function(){
