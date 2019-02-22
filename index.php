@@ -3,9 +3,7 @@
 if(isset($_GET["folder"]))
 {
   $path=rawurldecode($_GET["folder"]);
-
-  if(strpos($path,"..")!==false)die();         //no folder traversing
-
+  if(strpos($path,"..")!==false)die();        //no folder traversing
   if(substr($path,0,1)==="/")$path = '';      //no root folder access
 
   if($path<>'')
@@ -32,7 +30,7 @@ if(isset($_GET["folder"]))
     echo $pieces[count($pieces)-1].'</div>';
   }
 
-  $files = $path."*.{mp3,ogg,wav,MP3,OGG,WAV}";
+  $files=$path."*.{mp3,ogg,wav,MP3,OGG,WAV}";
 
   foreach(glob($files,GLOB_BRACE)as$filename)
   {
@@ -74,6 +72,41 @@ if(isset($_GET["icon"]))
     //https://material.io/tools/icons/?icon=playlist_add&style=baseline
     die();
   }
+  if($icon=="play")
+  {
+    header($header);
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
+    //https://material.io/tools/icons/?icon=play_arrow&style=baseline
+    die();
+  }
+  if($icon=="pause")
+  {
+    header($header);
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
+    //https://material.io/tools/icons/?icon=pause&style=baseline
+    die();
+  }
+  if($icon=="previous")
+  {
+    header($header);
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
+    //https://material.io/tools/icons/?icon=skip_previous&style=baseline
+    die();
+  }
+  if($icon=="next")
+  {
+    header($header);
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
+    //https://material.io/tools/icons/?icon=skip_next&style=baseline
+    die();
+  }
+  if($icon=="playlistempty")
+  {
+    header($header);
+    echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15 16h4v2h-4zm0-8h7v2h-7zm0 4h6v2h-6zM3 18c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V8H3v10zM14 5h-3l-1-1H6L5 5H2v2h12z"/><path fill="none" d="M0 0h24v24H0z"/></svg>';
+    //https://material.io/tools/icons/?icon=delete_sweep&style=baseline
+    die();
+  }
 }
 if(count($_GET)) die('ERROR unknown request.');
 ?><!doctype HTML>
@@ -98,6 +131,11 @@ body{
   margin:0;
   padding:0;
   background:darkgray;
+  color:white;
+}
+a{
+  color:white;
+  text-decoration:none;
 }
 #currentPath{
   position:absolute;
@@ -110,7 +148,6 @@ body{
   color:yellow;
   display: flex;
   align-items: center; /* align vertical */
-  font-size:larger;
 }
 #navList{
   position:absolute;
@@ -150,8 +187,8 @@ body{
   color:white;
   white-space: nowrap;
   overflow:hidden;
-  display: flex;
-  align-items: center; /* align vertical */
+  display:flex;
+  align-items:center; /* align vertical */
 }
 .deleteButton, .folderIcon{
   background-color:red;
@@ -159,20 +196,57 @@ body{
   min-width:40px;
   min-height:40px;
 }
-#player {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
+#player{
+  display:none;
+}
+#playerControls{
+  position:absolute;
+  bottom:0;
+  width:100%;
   margin:0;
   padding:0;
+  background-color:#8c1b1b;
+}
+#slider{
+  -webkit-appearance: none;
+  width:100%;
+  height:10px;
+  border-radius:5px;
+  background:#d3d3d3;
+  outline:none;
+  opacity:0.7;
+  -webkit-transition:opacity .15s ease-in-out;
+  transition:opacity .15s ease-in-out;
+}
+#currentPlaying{
+  display:flex;
+  align-items:center;
+  padding:5px 15px;
+  overflow:hidden;
+  white-space:nowrap;
+  color:white;
+}
+#controlArea{
+  display:flex;
+  align-items:center;
+}
+#currentTime{
+  margin:0 15px;
+}
+.verticalCenter{
+  margin:0;
+  position:absolute;
+  top:50%;
+  -ms-transform:translateY(-50%);
+  transform:translateY(-50%);
 }
 .noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
+  -webkit-touch-callout:none; /* iOS Safari */
+    -webkit-user-select:none; /* Safari */
+     -khtml-user-select:none; /* Konqueror HTML */
+       -moz-user-select:none; /* Firefox */
+        -ms-user-select:none; /* Internet Explorer/Edge */
+            user-select:none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
 </style>
@@ -181,6 +255,10 @@ body{
 <div id="currentPath" class="noselect"></div>
 <div id="navList" class="noselect"></div>
 <div id="playList" class="noselect"></div>
+<div id="playerControls" class="noselect">
+<div id="currentPlaying"><a href="https://github.com/CelliesProjects/html5_audioplayer" target="_blank">html5_audioplayer v0.9</a></div>
+<div id="controlArea"><img id="previousButton" class="folderIcon" src="?icon=previous"><img id="playButton" class="folderIcon" src="?icon=play"><img id="nextButton" class="folderIcon" src="?icon=next"><img id="clearList" class="folderIcon" src="?icon=playlistempty"><input type="range" min="0" max="100" value="0" class="" id="slider"><p id="currentTime"></p>
+</div>
 <audio controls autoplay id="player">Your browser does not support the audio element.</audio>
 <script>
 $(document).ready( function()
@@ -190,6 +268,10 @@ $(document).ready( function()
   var tempFolder;
   var currentSong=undefined;
   var player=document.getElementById('player');
+  var scrollPos = []; //array to keep track of nested folders
+
+  $('#navList, #playList').css({"bottom":$('#playerControls').height()});
+  updateNavList();
 
   function updatePlayList()
   {
@@ -198,7 +280,7 @@ $(document).ready( function()
       $('.playListLink').eq(currentSong).css('background-color','black');
   }
 
-  function updateNavList()
+  function updateNavList(restoreScroll)
   {
     $.get(scriptUrl+currentFolder,function(){
       //alert("success");
@@ -212,28 +294,28 @@ $(document).ready( function()
         currentFolder = tempFolder;
       })
       .always(function(){
-        //alert( "finished" );
+        if(restoreScroll)
+          $('#navList').scrollTop(scrollPos.pop()); //pop from stack
+        $('#navList').css({"opacity":1});
       });
   };
 
-  $('#navList, #playList').css({"bottom":$('#player').height()});
-
-  $('#navList').load( scriptUrl );
-
   $('body').on('click','#upLink',function()
   {
+    $('#navList').css({"opacity":0.5});
     $('#currentPath').html("Loading...");
     if(currentFolder.includes('/'))
       currentFolder=currentFolder.split('/').slice(0, -1).join('/');
     else
       currentFolder='';
-
-    updateNavList();
+    updateNavList(true);
   });
 
   $('body').on('click','.folderLink',function()
   {
     $('#currentPath').html("Loading...");
+    $('#navList').css({"opacity":0.5});
+    scrollPos.push($('#navList').scrollTop()); //push on stack
     tempFolder=currentFolder; //save currentFolder for .fail callback
     if(currentFolder) currentFolder+='/';
     currentFolder+=$(this).text();
@@ -242,14 +324,14 @@ $(document).ready( function()
 
   $('body').on('click','.fileLink',function()
   {
-    $('#playList').append('<p class="playListLink" data-path="'+currentFolder+'"><img class="deleteButton" src="?icon=delete">'+$(this).text()+'</p>');
+    $('#playList').append('<p class="playListLink" data-path="'+currentFolder+'"><img class="deleteButton folderIcon" src="?icon=delete">'+$(this).text()+'</p>');
+
     if(player.paused)
     {
       if(currentFolder)
         player.src=currentFolder+'/'+$(this).text();
       else
         player.src=$(this).text();
-
       currentSong=$('.playListLink').length-1;
       updatePlayList();
     }
@@ -259,21 +341,13 @@ $(document).ready( function()
   {
     currentSong=$(this).index('.playListLink');
     player.src=encodeURI($(this).data('path')+'/'+$(this).text());
+
     updatePlayList();
   });
 
-  player.addEventListener('ended',function()
+  $('body').on('input','#slider',function(e)
   {
-    if(currentSong<$('.playListLink').length-1)
-    {
-      currentSong++;
-      player.src=encodeURI($('.playListLink').eq(currentSong).data('path')+'/'+$('.playListLink').eq(currentSong).text());
-      updatePlayList();
-      return;
-    }
-    player.src='';
-    currentSong=undefined;
-    updatePlayList();
+    player.currentTime=this.value;
   });
 
   $('body').on('click','.deleteButton',function(event)
@@ -322,18 +396,98 @@ $(document).ready( function()
         //add each .fileLink from the invisible navList
         var songBeforeAdd=$('.playListLink').length;
         $("#invisFolder .fileLink").each(function(index){
-          $('#playList').append('<p class="playListLink" data-path="'+folderToAdd+'"><img class="deleteButton" src="?icon=delete">'+$(this).text()+'</p>');
+          $('#playList').append('<p class="playListLink" data-path="'+folderToAdd+'"><img class="deleteButton folderIcon" src="?icon=delete">'+$(this).text()+'</p>');
         });
         document.body.removeChild(nList);
         if(player.paused) $('.playListLink').eq(songBeforeAdd).click();
       })
       .fail(function(){
-        $('#currentPath').html("ERROR! Unable to preview "+folderToAdd);
+        $('#currentPath').html("ERROR! Unable to add "+folderToAdd);
       })
       .always(function(){
         //alert( "finished" );
       });
     event.stopPropagation();
+  });
+
+  $('body').on('click','#playButton',function(event)
+  {
+    if (player.paused)
+    {
+      if (currentSong!==undefined) player.play();
+    }
+    else
+      player.pause();
+  });
+
+  $('body').on('click','#nextButton',function()
+  {
+    //
+    if(currentSong<$('.playListLink').length-1)
+    {
+      currentSong++;
+      $('.playListLink').eq (currentSong).click();
+    }
+    if (currentSong==$('.playListLink').length)
+    {
+      //
+      $('#nextButton').attr({"opacity":"0.5"});
+    }
+  });
+
+  $('body').on('click','#clearList',function()
+  {
+    //
+    player.pause();
+    player.src='';
+    slider.value=0;
+    currentSong=undefined;
+    $('#currentTime').html('');
+    $('#currentPlaying').html('&nbsp;');
+    $('#playList').html('');
+  });
+
+  player.addEventListener('ended',function()
+  {
+    $('#currentTime').html();
+    if(currentSong<$('.playListLink').length-1)
+    {
+      currentSong++;
+      player.src=encodeURI($('.playListLink').eq(currentSong).data('path')+'/'+$('.playListLink').eq(currentSong).text());
+      updatePlayList();
+      return;
+    }
+    player.src='';
+    slider.value=0;
+    currentSong=undefined;
+    updatePlayList();
+    $('#currentTime').html('');
+    $('#currentPlaying').html('&nbsp;');
+  });
+
+  player.addEventListener('playing',function()
+  {
+    $('#playButton').attr("src","?icon=pause");
+    $('#currentPlaying').html($('.playListLink').eq(currentSong).text());
+    slider.max=player.duration;
+  });
+
+  player.addEventListener('pause',function()
+  {
+    $('#playButton').attr("src","?icon=play");
+  });
+
+  player.addEventListener('timeupdate',function()
+  {
+    if (player.paused) return;
+    slider.value=player.currentTime;
+    var now = new Date(null);
+    now.setSeconds(player.currentTime);
+    var currentTime = now.toISOString().substr(11, 8);
+    var total = new Date(null);
+    total.setSeconds(player.duration);
+    var duration = total.toISOString().substr(11, 8);
+    $('#currentTime').html(currentTime+"/"+duration);
   });
 });
 </script>
