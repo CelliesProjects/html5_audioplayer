@@ -17,12 +17,12 @@ if(isset($_GET["folder"]))
     }
     echo '<div id="upLink"><img class="folderIcon" src="?icon=folderup"></div>';
   }
-
+  $validFiles="*.{mp3,ogg,wav,MP3,OGG,WAV}";
   foreach(glob($path."*",GLOB_ONLYDIR)as$filename)
   {
     echo '<div class="folderLink">';
     $pieces=explode('/',$filename);
-    if(glob($filename.'/*.{mp3,ogg,wav,MP3,OGG,WAV}',GLOB_BRACE))
+    if(glob($filename.'/'.$validFiles,GLOB_BRACE))
       echo '<img class="folderIcon addFolder" src="?icon=addfolder">';
     else
       echo '<img class="folderIcon" src="">';
@@ -30,9 +30,7 @@ if(isset($_GET["folder"]))
     echo $pieces[count($pieces)-1].'</div>';
   }
 
-  $files=$path."*.{mp3,ogg,wav,MP3,OGG,WAV}";
-
-  foreach(glob($files,GLOB_BRACE)as$filename)
+  foreach(glob($path.$validFiles,GLOB_BRACE)as$filename)
   {
     $pieces=explode('/',$filename);
     echo '<div class="fileLink"><img class="folderIcon saveButton" src="?icon=save">'.$pieces[count($pieces)-1].'</div>';
@@ -117,7 +115,7 @@ if(count($_GET)) die('ERROR unknown request.');
 <meta name="viewport" content="minimal-ui, width=device-width, initial-scale=.7, maximum-scale=.7, user-scalable=no">
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">  <!--prevent favicon requests-->
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">  <!-- https://fonts.google.com/specimen/Roboto?selection.family=Roboto -->
-<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 <style>
 html{
   width: 100%;
@@ -257,7 +255,7 @@ a{
 <div id="playList" class="noselect"></div>
 <div id="playerControls" class="noselect">
 <div id="currentPlaying"><a href="https://github.com/CelliesProjects/html5_audioplayer" target="_blank">html5_audioplayer v0.9</a></div>
-<div id="controlArea"><img id="previousButton" class="folderIcon" src="?icon=previous"><img id="playButton" class="folderIcon" src="?icon=play"><img id="nextButton" class="folderIcon" src="?icon=next"><img id="clearList" class="folderIcon" src="?icon=playlistempty"><input type="range" min="0" max="100" value="0" class="" id="slider"><p id="currentTime"></p>
+<div id="controlArea"><img id="previousButton" class="folderIcon" src="?icon=previous"><img id="playButton" class="folderIcon" src="?icon=play"><img id="nextButton" class="folderIcon" src="?icon=next"><img id="clearList" class="folderIcon" src="?icon=playlistempty"><input type="range" min="0" max="0" value="0" class="" id="slider"><p id="currentTime"></p>
 </div>
 <audio controls autoplay id="player">Your browser does not support the audio element.</audio>
 <script>
@@ -282,7 +280,7 @@ $(document).ready( function()
 
   function updateNavList(restoreScroll)
   {
-    $.get(scriptUrl+currentFolder,function(){
+    $.get(scriptUrl+encodeURIComponent(currentFolder),function(){
       //alert("success");
     })
       .done(function(data){
@@ -341,7 +339,6 @@ $(document).ready( function()
   {
     currentSong=$(this).index('.playListLink');
     player.src=encodeURI($(this).data('path')+'/'+$(this).text());
-
     updatePlayList();
   });
 
@@ -383,7 +380,7 @@ $(document).ready( function()
     var folderToAdd='';
     if(currentFolder) folderToAdd=currentFolder+'/';
     folderToAdd+=$(this).parent().text();
-    $.get(scriptUrl+folderToAdd,function(data){
+    $.get(scriptUrl+encodeURIComponent(folderToAdd),function(data){
       //alert( "success" );
     })
       .done(function(data){
@@ -420,24 +417,28 @@ $(document).ready( function()
       player.pause();
   });
 
+  $('body').on('click','#previousButton',function()
+  {
+    if(currentSong>0)
+    {
+      currentSong--;
+      updatePlayList();
+      $('.playListLink').eq (currentSong).click();
+    }
+  });
+
   $('body').on('click','#nextButton',function()
   {
-    //
     if(currentSong<$('.playListLink').length-1)
     {
       currentSong++;
+      updatePlayList();
       $('.playListLink').eq (currentSong).click();
-    }
-    if (currentSong==$('.playListLink').length)
-    {
-      //
-      $('#nextButton').attr({"opacity":"0.5"});
     }
   });
 
   $('body').on('click','#clearList',function()
   {
-    //
     player.pause();
     player.src='';
     slider.value=0;

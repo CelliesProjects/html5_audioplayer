@@ -20,4 +20,4 @@ With Apache 2.4, easiest setup is to symlink `htdocs` to the folder where you ke
 ### Disclaimer:
 - The used icons are from [material.io](https://material.io/tools/icons/?style=baseline).
 - Uses [Google Roboto font](https://fonts.google.com/specimen/Roboto)
-- Uses [jQuery 3.2.1](https://code.jquery.com/jquery-3.2.1.js).
+- Uses [jQuery 3.3.1](https://code.jquery.com/jquery-3.3.1.js).
