@@ -17,7 +17,7 @@ if(isset($_GET["folder"]))
     }
     echo '<div id="upLink"><img class="folderIcon" src="?icon=folderup"></div>';
   }
-  $validFiles="*.{mp3,ogg,wav,MP3,OGG,WAV}";
+  $validFiles="*.{[Mm][Pp]3,[Oo][Gg][Gg],[Ww][Aa][Vv]}";
   foreach(glob($path."*",GLOB_ONLYDIR)as$filename)
   {
     echo '<div class="folderLink">';
