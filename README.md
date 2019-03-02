@@ -1,7 +1,8 @@
 # html5_audioplayer
-A simple single file php/jQuery/html5 audioplayer. Works on all major browsers. Less than 15Kb download. Simple and fast.
+A simple single file php/jQuery/html5 audioplayer. Works in all major browsers on pc and phone. Less than 15Kb download. Simple and fast.
 
-<img src="screenshots/phone_panorama.png" width="400">
+This is how the player looks on a Samsung Galaxy S5 NEO Android phone.
+<img src="screenshots/phone_panorama.png" width="600">
 
 ### You will need:
 - A working Apache webserver with PHP enabled.<br>
