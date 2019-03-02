@@ -303,6 +303,14 @@ $(document).ready( function()
       });
   };
 
+  function resetPlayer()
+  {
+    player.src='';
+    slider.value=0;
+    $('#currentPlaying').html('&nbsp;');
+    $('#currentTime').html('');
+  }
+
   $('body').on('click','#upLink',function()
   {
     $('#navList').css({"opacity":0.5});
@@ -358,10 +366,7 @@ $(document).ready( function()
     if(currentSong==$(this).parent().index())
     {
       player.pause();
-      player.src='';
-      slider.value=0;
-      $('#currentPlaying').html('&nbsp;');
-      $('#currentTime').html('');
+      resetPlayer();
       currentSong=undefined;
     }
     if(currentSong>$(this).parent().index())
@@ -448,11 +453,8 @@ $(document).ready( function()
   $('body').on('click','#clearList',function()
   {
     player.pause();
-    player.src='';
-    slider.value=0;
+    resetPlayer();
     currentSong=undefined;
-    $('#currentTime').html('');
-    $('#currentPlaying').html('&nbsp;');
     $('#playList').html('');
   });
 
@@ -474,12 +476,8 @@ $(document).ready( function()
       updatePlayList();
       return;
     }
-    player.src='';
-    slider.value=0;
+    resetPlayer();
     currentSong=undefined;
-    updatePlayList();
-    $('#currentTime').html('');
-    $('#currentPlaying').html('&nbsp;');
   });
 
   player.addEventListener('playing',function()
