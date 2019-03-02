@@ -359,6 +359,9 @@ $(document).ready( function()
     {
       player.pause();
       player.src='';
+      slider.value=0;
+      $('#currentPlaying').html('&nbsp;');
+      $('#currentTime').html('');
       currentSong=undefined;
     }
     if(currentSong>$(this).parent().index())
