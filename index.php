@@ -188,12 +188,17 @@ a{
   display:flex;
   align-items:center; /* align vertical */
 }
-.deleteButton, .folderIcon{
+.folderIcon{
   background-color:red;
   margin:0 15px 0 0;
   min-width:40px;
   min-height:40px;
 }
+#controlArea .folderIcon{
+  background-color:#8c1b1b;
+  cursor:pointer;
+}
+
 #player{
   display:none;
 }
@@ -219,7 +224,7 @@ a{
 #currentPlaying{
   display:flex;
   align-items:center;
-  padding:5px 15px;
+  padding:0 15px;
   overflow:hidden;
   white-space:nowrap;
   color:white;
@@ -255,7 +260,7 @@ a{
 <div id="playList" class="noselect"></div>
 <div id="playerControls" class="noselect">
 <div id="currentPlaying"><a href="https://github.com/CelliesProjects/html5_audioplayer" target="_blank">html5_audioplayer v0.9</a></div>
-<div id="controlArea"><img id="previousButton" class="folderIcon" src="?icon=previous"><img id="playButton" class="folderIcon" src="?icon=play"><img id="nextButton" class="folderIcon" src="?icon=next"><img id="clearList" class="folderIcon" src="?icon=playlistempty"><input type="range" min="0" max="0" value="0" class="" id="slider"><p id="currentTime"></p>
+<div id="controlArea"><img id="previousButton" class="folderIcon" src="?icon=previous"><img id="playButton" class="folderIcon" src="?icon=play"><img id="nextButton" class="folderIcon" src="?icon=next"><input type="range" min="0" max="0" value="0" class="" id="slider"><p id="currentTime"></p><img id="clearList" class="folderIcon" src="?icon=playlistempty" style="margin:0;">
 </div>
 <audio controls autoplay id="player">Your browser does not support the audio element.</audio>
 <script>
@@ -446,6 +451,14 @@ $(document).ready( function()
     $('#currentTime').html('');
     $('#currentPlaying').html('&nbsp;');
     $('#playList').html('');
+  });
+
+  $('body').keypress(function(e)
+  {
+    if(e.key===" "){
+      playButton.click();
+      e.preventDefault();
+    }
   });
 
   player.addEventListener('ended',function()
