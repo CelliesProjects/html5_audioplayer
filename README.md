@@ -21,3 +21,8 @@ With Apache 2.4, easiest setup is to symlink `htdocs` to the folder where you ke
 - The used icons are from [material.io](https://material.io/tools/icons/?style=baseline).
 - Uses [Google Roboto font](https://fonts.google.com/specimen/Roboto)
 - Uses [jQuery 3.3.1](https://code.jquery.com/jquery-3.3.1.js).
+
+### Some screenshots:
+<img src="screenshots/phone_panorama.png" width="400" title="Samsung Galaxy S5 NEO panorama screenshot">
+<img src="screenshots/phone_portrait.png" width="200" title="Samsung Galaxy S5 NEO portrait screenshot">
+<img src="screenshots/pc.png" width="700" title="PC screenshot">
