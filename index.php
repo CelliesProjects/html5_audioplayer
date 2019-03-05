@@ -188,17 +188,17 @@ a{
   display:flex;
   align-items:center; /* align vertical */
 }
-.folderIcon{
+.folderIcon, .actionIcon{
   background-color:red;
-  margin:0 15px;
+  margin:0 15px 0 0;
   min-width:40px;
   min-height:40px;
 }
-#controlArea .folderIcon{
+.actionIcon{
   background-color:#8c1b1b;
   cursor:pointer;
+  margin:0 15px;
 }
-
 #player{
   display:none;
 }
@@ -260,7 +260,7 @@ a{
 <div id="playList" class="noselect"></div>
 <div id="playerControls" class="noselect">
 <div id="currentPlaying"><a href="https://github.com/CelliesProjects/html5_audioplayer" target="_blank">html5_audioplayer v0.9</a></div>
-<div id="controlArea"><img id="previousButton" class="folderIcon" src="?icon=previous"><img id="playButton" class="folderIcon" src="?icon=play"><img id="nextButton" class="folderIcon" src="?icon=next"><input type="range" min="0" max="0" value="0" class="" id="slider"><p id="currentTime"></p><img id="clearList" class="folderIcon" src="?icon=playlistempty">
+<div id="controlArea"><img id="previousButton" class="actionIcon" src="?icon=previous"><img id="playButton" class="actionIcon" src="?icon=play"><img id="nextButton" class="actionIcon" src="?icon=next"><input type="range" min="0" max="0" value="0" class="" id="slider"><p id="currentTime"></p><img id="clearList" class="actionIcon" src="?icon=playlistempty">
 </div>
 <audio controls autoplay id="player">Your browser does not support the audio element.</audio>
 <script>
