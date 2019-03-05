@@ -98,7 +98,7 @@ if(isset($_GET["icon"]))
     //https://material.io/tools/icons/?icon=skip_next&style=baseline
     die();
   }
-  if($icon=="playlistempty")
+  if($icon=="clearlist")
   {
     header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15 16h4v2h-4zm0-8h7v2h-7zm0 4h6v2h-6zM3 18c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V8H3v10zM14 5h-3l-1-1H6L5 5H2v2h12z"/><path fill="none" d="M0 0h24v24H0z"/></svg>';
@@ -118,10 +118,10 @@ if(count($_GET)) die('ERROR unknown request.');
 <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 <style>
 html{
-  width: 100%;
+  width:100%;
   margin:0;
   padding:0;
-  font-family: 'Roboto', sans-serif;
+  font-family:'Roboto', sans-serif;
   font-size:x-large;
 }
 body{
@@ -144,8 +144,8 @@ a{
   background-color:#8c1b1b;
   padding:5px 15px;
   color:yellow;
-  display: flex;
-  align-items: center; /* align vertical */
+  display:flex;
+  align-items:center; /* align vertical */
 }
 #navList{
   position:absolute;
@@ -166,10 +166,10 @@ a{
   margin:5px 0;
   background-color:grey;
   color:yellow;
-  white-space: nowrap;
+  white-space:nowrap;
   overflow:hidden;
-  display: flex;
-  align-items: center; /* align vertical */
+  display:flex;
+  align-items:center; /* align vertical */
 }
 .fileLink{
   color:white;
@@ -183,7 +183,7 @@ a{
   margin:5px 0;
   background-color:grey;
   color:white;
-  white-space: nowrap;
+  white-space:nowrap;
   overflow:hidden;
   display:flex;
   align-items:center; /* align vertical */
@@ -211,7 +211,7 @@ a{
   background-color:#8c1b1b;
 }
 #slider{
-  -webkit-appearance: none;
+  -webkit-appearance:none;
   width:100%;
   height:10px;
   border-radius:5px;
@@ -260,8 +260,7 @@ a{
 <div id="playList" class="noselect"></div>
 <div id="playerControls" class="noselect">
 <div id="currentPlaying"><a href="https://github.com/CelliesProjects/html5_audioplayer" target="_blank">html5_audioplayer v0.9</a></div>
-<div id="controlArea"><img id="previousButton" class="actionIcon" src="?icon=previous"><img id="playButton" class="actionIcon" src="?icon=play"><img id="nextButton" class="actionIcon" src="?icon=next"><input type="range" min="0" max="0" value="0" class="" id="slider"><p id="currentTime"></p><img id="clearList" class="actionIcon" src="?icon=playlistempty">
-</div>
+<div id="controlArea"><img id="previousButton" class="actionIcon" src="?icon=previous"><img id="playButton" class="actionIcon" src="?icon=play"><img id="nextButton" class="actionIcon" src="?icon=next"><input type="range" min="0" max="0" value="0" class="" id="slider"><p id="currentTime"></p><img id="clearList" class="actionIcon" src="?icon=clearlist"></div>
 <audio controls autoplay id="player">Your browser does not support the audio element.</audio>
 <script>
 $(document).ready( function()
