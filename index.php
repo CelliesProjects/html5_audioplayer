@@ -338,11 +338,8 @@ $(document).ready( function()
 
     if(player.paused)
     {
-      if(currentFolder)
-        player.src=currentFolder+'/'+$(this).text();
-      else
-        player.src=$(this).text();
       currentSong=$('.playListLink').length-1;
+      $('.playListLink').eq(currentSong).click();
       updatePlayList();
     }
   });
@@ -354,7 +351,7 @@ $(document).ready( function()
     updatePlayList();
   });
 
-  $('body').on('input','#slider',function(e)
+  $('body').on('input','#slider',function()
   {
     player.currentTime=this.value;
   });
