@@ -26,11 +26,20 @@ Navigate to and click on a file in the left pane to add it to the playlist.
 - Uses [jQuery 3.3.1](https://code.jquery.com/jquery-3.3.1.js).
 
 ### Some screenshots:
-#### Samsung Galaxy S5 NEO panorama
+#### Android Samsung S5 NEO Chrome landscape
 <img src="screenshots/phone_panorama.png" width="400">
 
-#### Samsung Galaxy S5 NEO portrait
+#### Android Samsung S5 NEO Chrome portrait
 <img src="screenshots/phone_portrait.png" width="200">
 
-#### PC
-<img src="screenshots/pc.png" width="700">
+#### PC Linux Mint Chrome
+<img src="screenshots/pc_linux_chrome.png" width="700">
+
+#### PC Windows 10 Edge
+<img src="screenshots/pc_windows_edge.png" width="700">
+
+#### Iphone Safari landscape
+<img src="screenshots/iphone_safari_landscape.png" width="400">
+
+#### Iphone Safari portrait
+<img src="screenshots/iphone_safari_portrait.png" width="200">
