@@ -39,7 +39,7 @@ Navigate to and click on a file in the left pane to add it to the playlist.
 <img src="screenshots/pc_windows_edge.png" width="700">
 
 #### Iphone Safari landscape
-<img src="screenshots/iphone_safari_landscape.png" width="400">
+<img src="screenshots/iphone_safari_landscape.jpg" width="400">
 
 #### Iphone Safari portrait
-<img src="screenshots/iphone_safari_portrait.png" width="200">
+<img src="screenshots/iphone_safari_portrait.jpg" width="200">
