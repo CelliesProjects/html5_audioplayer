@@ -359,9 +359,8 @@ $(document).ready( function()
     player.currentTime=this.value;
   });
 
-  $('body').on('click','.deleteButton',function(event)
+  $('body').on('click','.deleteButton',function(e)
   {
-    event.stopPropagation();
     if(currentSong==$(this).parent().index())
     {
       player.pause();
@@ -372,9 +371,10 @@ $(document).ready( function()
       currentSong--;
     $(this).parent().remove();
     updatePlayList;
+    e.stopPropagation();
   });
 
-  $('body').on('click','.saveButton',function(event)
+  $('body').on('click','.saveButton',function(e)
   {
     const a=document.createElement("a");
     a.style.display="none";
@@ -384,10 +384,10 @@ $(document).ready( function()
     a.click();
     window.URL.revokeObjectURL(a.href);
     document.body.removeChild(a);
-    event.stopPropagation();
+    e.stopPropagation();
   });
 
-  $('body').on('click','.addFolder',function(event)
+  $('body').on('click','.addFolder',function(e)
   {
     var folderToAdd='';
     if(currentFolder) folderToAdd=currentFolder+'/';
@@ -416,10 +416,10 @@ $(document).ready( function()
       .always(function(){
         //alert( "finished" );
       });
-    event.stopPropagation();
+    e.stopPropagation();
   });
 
-  $('body').on('click','#playButton',function(event)
+  $('body').on('click','#playButton',function()
   {
     if (player.paused)
     {
@@ -471,12 +471,13 @@ $(document).ready( function()
     if(currentSong<$('.playListLink').length-1)
     {
       currentSong++;
-      player.src=encodeURI($('.playListLink').eq(currentSong).data('path')+'/'+$('.playListLink').eq(currentSong).text());
       updatePlayList();
+      $('.playListLink').eq(currentSong).click();
       return;
     }
-    resetPlayer();
     currentSong=undefined;
+    resetPlayer();
+    updatePlayList();
   });
 
   player.addEventListener('playing',function()
