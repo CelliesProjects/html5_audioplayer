@@ -1,7 +1,11 @@
 # html5_audioplayer
-A simple single file php/jQuery/html5 audioplayer. Works in all major browsers on pc and phone. Less than 15Kb download. Simple and fast.
 
-This is how the player looks on a Samsung Galaxy S5 NEO Android phone.
+html5_audioplayer provides an easy way to stream the music from your lamp server. 
+<br>It is intended as a replacement for the Apache plugin `mod_musicindex` which was a pain to install and is not maintained anymore.
+<br><br>html5_audioplayer is a simple one-file drop in musicplayer.
+<br>Just symlink `htdocs` to the root of your music collection and copy `index.php` to that folder and it works.
+
+html5_audioplayer on a Samsung Galaxy S5 NEO Android phone.
 <img src="screenshots/phone_panorama.png" width="600">
 
 ### You will need:
@@ -20,12 +24,12 @@ Navigate to and click on a file in the left pane to add it to the playlist.
 <br>If the player is paused the clicked song starts playing immediately.
 
 
-### Disclaimer:
+### Used libraries:
 - The used icons are from [material.io](https://material.io/tools/icons/?style=baseline).
 - Uses [Google Roboto font](https://fonts.google.com/specimen/Roboto)
 - Uses [jQuery 3.3.1](https://code.jquery.com/jquery-3.3.1.js).
 
-### Some screenshots:
+### Screenshots:
 #### Android Samsung S5 NEO Chrome landscape
 <img src="screenshots/phone_panorama.png" width="400">
 
