@@ -2,7 +2,7 @@
 
 html5_audioplayer provides an easy way to stream the music from your lamp server. 
 <br>It is intended as a replacement for the Apache plugin `mod_musicindex` which was a pain to install and is not maintained anymore.
-<br><br>html5_audioplayer is a simple one-file drop in musicplayer.
+<br><br>html5_audioplayer is a simple one-file drop-in musicplayer.
 <br>Just symlink `htdocs` to the root of your music collection and copy `index.php` to that folder and it works.
 
 html5_audioplayer on a Samsung Galaxy S5 NEO Android phone.
@@ -25,9 +25,9 @@ Navigate to and click on a file in the left pane to add it to the playlist.
 
 
 ### Used libraries:
-- The used icons are from [material.io](https://material.io/tools/icons/?style=baseline).
-- Uses [Google Roboto font](https://fonts.google.com/specimen/Roboto)
-- Uses [jQuery 3.3.1](https://code.jquery.com/jquery-3.3.1.js).
+- The used icons are from [material.io](https://material.io/tools/icons/?style=baseline) and are [available under Apache2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
+- Uses [Google Roboto font](https://fonts.google.com/specimen/Roboto) which is [available under Apache2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
+- Uses [jQuery 3.3.1](https://code.jquery.com/jquery-3.3.1.js) which is [available under MIT license](https://jquery.org/license/).
 
 ### Screenshots:
 #### Android Samsung S5 NEO Chrome landscape
