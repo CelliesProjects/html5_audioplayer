@@ -418,12 +418,8 @@ $(document).ready( function()
 
   $('body').on('click','#playButton',function()
   {
-    if (player.paused)
-    {
-      if (currentSong!==undefined) player.play();
-    }
-    else
-      player.pause();
+    if(player.paused&&currentSong!==undefined)player.play();
+    else player.pause();
   });
 
   $('body').on('click','#previousButton',function()
