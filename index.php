@@ -121,7 +121,7 @@ html{
   width:100%;
   margin:0;
   padding:0;
-  font-family:'Roboto', sans-serif;
+  font-family:'Roboto',sans-serif;
   font-size:x-large;
 }
 body{
@@ -130,6 +130,7 @@ body{
   padding:0;
   background:darkgray;
   color:white;
+  opacity:0.85;
 }
 a{
   color:white;
@@ -145,7 +146,8 @@ a{
   padding:5px 15px;
   color:yellow;
   display:flex;
-  align-items:center; /* align vertical */
+  align-items:center;
+  white-space:nowrap;
 }
 #navList{
   position:absolute;
@@ -169,7 +171,7 @@ a{
   white-space:nowrap;
   overflow:hidden;
   display:flex;
-  align-items:center; /* align vertical */
+  align-items:center;
 }
 .fileLink{
   color:white;
@@ -186,7 +188,7 @@ a{
   white-space:nowrap;
   overflow:hidden;
   display:flex;
-  align-items:center; /* align vertical */
+  align-items:center;
 }
 .folderIcon, .actionIcon{
   background-color:red;
@@ -221,9 +223,17 @@ a{
   -webkit-transition:opacity .15s ease-in-out;
   transition:opacity .15s ease-in-out;
 }
+@media screen and (orientation:portrait){
+  #slider{display:none;}
+  #currentTime{margin:0 0 0 auto;}
+}
+@media screen and (orientation:landscape){
+  #slider{display:inline-block;}
+  #currentTime{margin:0 0 0 15px;}
+}
 #currentPlaying{
   display:flex;
-  align-items:center;
+  //align-items:center;
   padding:0 15px;
   overflow:hidden;
   white-space:nowrap;
@@ -233,17 +243,7 @@ a{
   display:flex;
   align-items:center;
 }
-#currentTime{
-  margin:0 15px;
-}
-.verticalCenter{
-  margin:0;
-  position:absolute;
-  top:50%;
-  -ms-transform:translateY(-50%);
-  transform:translateY(-50%);
-}
-.noselect {
+.noselect{
   -webkit-touch-callout:none; /* iOS Safari */
     -webkit-user-select:none; /* Safari */
      -khtml-user-select:none; /* Konqueror HTML */
