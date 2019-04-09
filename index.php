@@ -266,13 +266,12 @@ $(document).ready( function()
 {
   const scriptUrl='?folder=';
   var currentFolder='';
-  var tempFolder;
   var currentSong=undefined;
   var player=document.getElementById('player');
   var scrollPos = []; //array to keep track of nested folders
 
   $('#navList, #playList').css({"bottom":$('#playerControls').height()});
-  updateNavList();
+  updateNavList('',true);
 
   function updatePlayList()
   {
@@ -281,18 +280,18 @@ $(document).ready( function()
       $('.playListLink').eq(currentSong).css('background-color','black');
   }
 
-  function updateNavList(restoreScroll)
+  function updateNavList(folder,restoreScroll)
   {
-    $.get(scriptUrl+encodeURIComponent(currentFolder),function(){
+    $.get(scriptUrl+encodeURIComponent(folder),function(){
       //alert("success");
     })
       .done(function(data){
-        $('#currentPath').html(currentFolder);
+        $('#currentPath').html(folder);
+        currentFolder=folder;
         $('#navList').html(data).scrollTop(0);
       })
       .fail(function(){
-        $('#currentPath').html("ERROR! Unable to access "+currentFolder);
-        currentFolder = tempFolder;
+        $('#currentPath').html("ERROR! Unable to access "+folder);
       })
       .always(function(){
         if(restoreScroll)
@@ -317,7 +316,7 @@ $(document).ready( function()
       currentFolder=currentFolder.split('/').slice(0, -1).join('/');
     else
       currentFolder='';
-    updateNavList(true);
+    updateNavList(currentFolder,true);
   });
 
   $('body').on('click','.folderLink',function()
@@ -325,10 +324,10 @@ $(document).ready( function()
     $('#currentPath').html("Loading...");
     $('#navList').css({"opacity":0.5});
     scrollPos.push($('#navList').scrollTop()); //push on stack
-    tempFolder=currentFolder; //save currentFolder for .fail callback
-    if(currentFolder) currentFolder+='/';
-    currentFolder+=$(this).text();
-    updateNavList();
+    var newFolder=currentFolder;
+    if(newFolder) newFolder+='/';
+    newFolder+=$(this).text();
+    updateNavList(newFolder);
   });
 
   $('body').on('click','.fileLink',function()
