@@ -29,7 +29,6 @@ if(isset($_GET["folder"]))
 
     echo $pieces[count($pieces)-1].'</div>';
   }
-
   foreach(glob($path.$validFiles,GLOB_BRACE)as$filename)
   {
     $pieces=explode('/',$filename);
@@ -112,7 +111,7 @@ if(count($_GET)) die('ERROR unknown request.');
 <head>
 <title><?php $_SERVER['HTTP_HOST'] ?></title>
 <meta charset="utf-8">
-<meta name="viewport" content="minimal-ui, width=device-width, initial-scale=.7, maximum-scale=.7, user-scalable=no">
+<meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1.0, maximum-scale=.7, user-scalable=no">
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">  <!--prevent favicon requests-->
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">  <!-- https://fonts.google.com/specimen/Roboto?selection.family=Roboto -->
 <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -126,6 +125,7 @@ html{
 }
 body{
   min-height:100%;
+  min-width:400px;
   margin:0;
   padding:0;
   background:darkgray;
@@ -223,17 +223,16 @@ a{
   -webkit-transition:opacity .15s ease-in-out;
   transition:opacity .15s ease-in-out;
 }
-@media screen and (orientation:portrait){
+@media screen and (max-width:600px){
   #slider{display:none;}
   #currentTime{margin:0 0 0 auto;}
 }
-@media screen and (orientation:landscape){
+@media screen and (min-width:600px){
   #slider{display:inline-block;}
   #currentTime{margin:0 0 0 15px;}
 }
 #currentPlaying{
   display:flex;
-  //align-items:center;
   padding:0 15px;
   overflow:hidden;
   white-space:nowrap;
