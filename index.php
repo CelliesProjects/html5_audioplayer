@@ -36,23 +36,11 @@ if(isset($_GET["folder"]))
   }
   die();
 }
-
-
-
-
-
 if(isset($_GET["bitrate"]))
 {
   system("exiftool -AudioBitrate -NominalBitrate -s -s -s './".rawurldecode($_GET["bitrate"])."'");
   die();
 }
-
-
-
-
-
-
-
 if(isset($_GET["icon"]))
 {
   $icon=htmlspecialchars($_GET["icon"]);
@@ -487,66 +475,24 @@ $(document).ready( function()
     updatePlayList();
   });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   player.addEventListener('playing',function()
   {
     $('#playButton').attr("src","?icon=pause");
     $('#currentPlaying').html($('.playListLink').eq(currentSong).text());
     slider.max=player.duration;
-    //haal de bitrate op en geef die weer achter de songnaam
     var thisSong;
-    if ($('.playListLink').eq(currentSong).data('path') != undefined) thisSong = ($('.playListLink').eq(currentSong).data('path'))+'/';
-    thisSong += ($('.playListLink').eq(currentSong).text());
-    thisSong = encodeURIComponent(thisSong);
-    console.log(thisSong);
+    var nowPlaying = player.src;
+    if ($('.playListLink').eq(currentSong).data('path')!=undefined)thisSong=encodeURIComponent($('.playListLink').eq(currentSong).data('path'))+'/';
+    thisSong+=encodeURIComponent($('.playListLink').eq(currentSong).text());
     $.get('?bitrate='+thisSong,function(){
     })
     .done(function(data){
-      if(data) $('#currentPlaying').append(' - '+data);
+      if(data&&nowPlaying==player.src) $('#currentPlaying').append(' - '+data);
     })
     .fail(function(){
-      //
-    })
-    .always(function(){
-      //console.log('done getting bitrate');
+      console.log('error getting bitrate');
     });
-    
   });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   player.addEventListener('pause',function()
   {
