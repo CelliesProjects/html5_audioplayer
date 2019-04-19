@@ -6,11 +6,9 @@ if(isset($_GET["folder"]))
   if(strpos($path,"..")!==false)die();        //no folder traversing
   if(substr($path,0,1)==="/")$path = '';      //no root folder access
 
-  if($path<>'')
-  {
+  if($path<>''){
     $path=$path.'/';
-    if(!file_exists($path))
-    {
+    if(!file_exists($path)){
       header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found", true,404);
       echo "Requested resource could not be found.";
       die();
@@ -18,19 +16,16 @@ if(isset($_GET["folder"]))
     echo '<div id="upLink"><img class="folderIcon" src="?icon=folderup"></div>';
   }
   $validFiles="*.{[Mm][Pp]3,[Oo][Gg][Gg],[Ww][Aa][Vv]}";
-  foreach(glob($path."*",GLOB_ONLYDIR)as$filename)
-  {
+  foreach(glob($path."*",GLOB_ONLYDIR)as$filename){
     echo '<div class="folderLink">';
     $pieces=explode('/',$filename);
     if(glob($filename.'/'.$validFiles,GLOB_BRACE))
       echo '<img class="folderIcon addFolder" src="?icon=addfolder">';
     else
       echo '<img class="folderIcon" src="">';
-
     echo $pieces[count($pieces)-1].'</div>';
   }
-  foreach(glob($path.$validFiles,GLOB_BRACE)as$filename)
-  {
+  foreach(glob($path.$validFiles,GLOB_BRACE)as$filename){
     $pieces=explode('/',$filename);
     echo '<div class="fileLink"><img class="folderIcon saveButton" src="?icon=save">'.$pieces[count($pieces)-1].'</div>';
   }
@@ -45,64 +40,55 @@ if(isset($_GET["icon"]))
 {
   $icon=htmlspecialchars($_GET["icon"]);
   $header="Content-Type: image/svg+xml";
-  if($icon=="delete")
-  {
+  if($icon=="delete"){
     header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/><path fill="none" d="M0 0h24v24H0V0z"/></svg>';
     //https://material.io/tools/icons/?icon=delete_outline&style=baseline
     die();
   }
-  if($icon=="folderup")
-  {
+  if($icon=="folderup"){
     header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M11 9l1.42 1.42L8.83 14H18V4h2v12H8.83l3.59 3.58L11 21l-6-6 6-6z"/></svg>';
     //https://material.io/tools/icons/?icon=subdirectory_arrow_left&style=baseline
     die();
   }
-  if($icon=="save")
-  {
+  if($icon=="save"){
     header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>';
     //https://material.io/tools/icons/?icon=save&style=baseline
     die();
   }
-  if($icon=="addfolder")
-  {
+  if($icon=="addfolder"){
     header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M14 10H2v2h12v-2zm0-4H2v2h12V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM2 16h8v-2H2v2z"/></svg>';
     //https://material.io/tools/icons/?icon=playlist_add&style=baseline
     die();
   }
-  if($icon=="play")
-  {
+  if($icon=="play"){
     header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
     //https://material.io/tools/icons/?icon=play_arrow&style=baseline
     die();
   }
-  if($icon=="pause")
-  {
+  if($icon=="pause"){
     header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
     //https://material.io/tools/icons/?icon=pause&style=baseline
     die();
   }
-  if($icon=="previous")
-  {
+  if($icon=="previous"){
     header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
     //https://material.io/tools/icons/?icon=skip_previous&style=baseline
     die();
   }
-  if($icon=="next")
-  {
+  if($icon=="next"){
     header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
     //https://material.io/tools/icons/?icon=skip_next&style=baseline
     die();
   }
-  if($icon=="clearlist")
-  {
+  if($icon=="clearlist"){
     header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15 16h4v2h-4zm0-8h7v2h-7zm0 4h6v2h-6zM3 18c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V8H3v10zM14 5h-3l-1-1H6L5 5H2v2h12z"/><path fill="none" d="M0 0h24v24H0z"/></svg>';
     //https://material.io/tools/icons/?icon=delete_sweep&style=baseline
@@ -287,21 +273,20 @@ $(document).ready( function()
   function updateNavList(folder,restoreScroll)
   {
     $.get(scriptUrl+encodeURIComponent(folder),function(){
-      //alert("success");
     })
-      .done(function(data){
-        $('#currentPath').html(folder);
-        currentFolder=folder;
-        $('#navList').html(data).scrollTop(0);
-      })
-      .fail(function(){
-        $('#currentPath').html("ERROR! Unable to access "+folder);
-      })
-      .always(function(){
-        if(restoreScroll)
-          $('#navList').scrollTop(scrollPos.pop()); //pop from stack
-        $('#navList').css({"opacity":1});
-      });
+    .done(function(data){
+      $('#currentPath').html(folder);
+      currentFolder=folder;
+      $('#navList').html(data).scrollTop(0);
+    })
+    .fail(function(){
+      $('#currentPath').html("ERROR! Unable to access "+folder);
+    })
+    .always(function(){
+      if(restoreScroll)
+        $('#navList').scrollTop(scrollPos.pop()); //pop from stack
+      $('#navList').css({"opacity":1});
+    });
   };
 
   function resetPlayer()
@@ -338,8 +323,7 @@ $(document).ready( function()
   {
     $('#playList').append('<p class="playListLink" data-path="'+currentFolder+'"><img class="deleteButton folderIcon" src="?icon=delete">'+$(this).text()+'</p>');
 
-    if(player.paused)
-    {
+    if(player.paused){
       currentSong=$('.playListLink').length-1;
       $('.playListLink').eq(currentSong).click();
       updatePlayList();
@@ -366,8 +350,7 @@ $(document).ready( function()
       resetPlayer();
       currentSong=undefined;
     }
-    if(currentSong>$(this).parent().index())
-      currentSong--;
+    if(currentSong>$(this).parent().index())currentSong--;
     $(this).parent().remove();
     updatePlayList;
     e.stopPropagation();
@@ -394,27 +377,24 @@ $(document).ready( function()
     $.get(scriptUrl+encodeURIComponent(folderToAdd),function(data){
       //alert( "success" );
     })
-      .done(function(data){
-        //make an invisible navList
-        const nList=document.createElement("div");
-        nList.style.display="none";
-        nList.id="invisFolder";
-        document.body.appendChild(nList);
-        $(nList).html(data);
-        //add each .fileLink from the invisible navList
-        var songBeforeAdd=$('.playListLink').length;
-        $("#invisFolder .fileLink").each(function(index){
-          $('#playList').append('<p class="playListLink" data-path="'+folderToAdd+'"><img class="deleteButton folderIcon" src="?icon=delete">'+$(this).text()+'</p>');
-        });
-        document.body.removeChild(nList);
-        if(player.paused) $('.playListLink').eq(songBeforeAdd).click();
-      })
-      .fail(function(){
-        $('#currentPath').html("ERROR! Unable to add "+folderToAdd);
-      })
-      .always(function(){
-        //alert( "finished" );
+    .done(function(data){
+      //make an invisible navList
+      const nList=document.createElement("div");
+      nList.style.display="none";
+      nList.id="invisFolder";
+      document.body.appendChild(nList);
+      $(nList).html(data);
+      //add each .fileLink from the invisible navList
+      var songBeforeAdd=$('.playListLink').length;
+      $("#invisFolder .fileLink").each(function(index){
+        $('#playList').append('<p class="playListLink" data-path="'+folderToAdd+'"><img class="deleteButton folderIcon" src="?icon=delete">'+$(this).text()+'</p>');
       });
+      document.body.removeChild(nList);
+      if(player.paused) $('.playListLink').eq(songBeforeAdd).click();
+    })
+    .fail(function(){
+      $('#currentPath').html("ERROR! Unable to add "+folderToAdd);
+    });
     e.stopPropagation();
   });
 
@@ -426,8 +406,7 @@ $(document).ready( function()
 
   $('body').on('click','#previousButton',function()
   {
-    if(currentSong>0)
-    {
+    if(currentSong>0){
       currentSong--;
       updatePlayList();
       $('.playListLink').eq (currentSong).click();
@@ -436,8 +415,7 @@ $(document).ready( function()
 
   $('body').on('click','#nextButton',function()
   {
-    if(currentSong<$('.playListLink').length-1)
-    {
+    if(currentSong<$('.playListLink').length-1){
       currentSong++;
       updatePlayList();
       $('.playListLink').eq (currentSong).click();
@@ -463,8 +441,7 @@ $(document).ready( function()
   player.addEventListener('ended',function()
   {
     $('#currentTime').html();
-    if(currentSong<$('.playListLink').length-1)
-    {
+    if(currentSong<$('.playListLink').length-1){
       currentSong++;
       updatePlayList();
       $('.playListLink').eq(currentSong).click();
@@ -482,7 +459,7 @@ $(document).ready( function()
     slider.max=player.duration;
     var thisSong;
     var nowPlaying=player.src;
-    if ($('.playListLink').eq(currentSong).data('path')!=undefined)thisSong=encodeURIComponent($('.playListLink').eq(currentSong).data('path'))+'/';
+    if($('.playListLink').eq(currentSong).data('path')!=undefined)thisSong=encodeURIComponent($('.playListLink').eq(currentSong).data('path'))+'/';
     thisSong+=encodeURIComponent($('.playListLink').eq(currentSong).text());
     $.get('?bitrate='+thisSong,function(){
     })
