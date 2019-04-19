@@ -475,13 +475,13 @@ $(document).ready( function()
     updatePlayList();
   });
 
-  player.addEventListener('playing',function()
+  player.addEventListener('play',function()
   {
-    $('#playButton').attr("src","?icon=pause");
+    if(player.currentTime!==0)return;
     $('#currentPlaying').html($('.playListLink').eq(currentSong).text());
     slider.max=player.duration;
     var thisSong;
-    var nowPlaying = player.src;
+    var nowPlaying=player.src;
     if ($('.playListLink').eq(currentSong).data('path')!=undefined)thisSong=encodeURIComponent($('.playListLink').eq(currentSong).data('path'))+'/';
     thisSong+=encodeURIComponent($('.playListLink').eq(currentSong).text());
     $.get('?bitrate='+thisSong,function(){
@@ -492,6 +492,11 @@ $(document).ready( function()
     .fail(function(){
       console.log('error getting bitrate');
     });
+  });
+
+  player.addEventListener('playing',function()
+  {
+    $('#playButton').attr("src","?icon=pause");
   });
 
   player.addEventListener('pause',function()
