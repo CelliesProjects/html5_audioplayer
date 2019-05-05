@@ -1,6 +1,6 @@
 # html5_audioplayer
 
-html5_audioplayer provides an easy way to stream the music from your lamp server. 
+html5_audioplayer provides an easy way to stream the music from your lamp server.
 <br>It is intended as a replacement for the Apache plugin `mod_musicindex` which was a pain to install and is not maintained anymore.
 <br><br>html5_audioplayer is a simple one-file drop-in musicplayer.
 <br>Just symlink `htdocs` to the root of your music collection and copy `index.php` to that folder and it works.
@@ -12,6 +12,14 @@ html5_audioplayer on a Samsung Galaxy S5 NEO Android phone.
 - A working Apache webserver with PHP enabled.<br>
 Actual versions should not matter that much but the player is developed against Apache 2.4 and PHP 7.
 - A folder with MP3s, OGGs and/or WAV files.
+- (Optionally) `exiftool` to show the bitrate. Default setting is to not show the bitrate.
+
+To show the bitrate of the currently playing song `$showBitrate` in `index.php` has to be set to `true` and `exiftool` has to be installed.
+<br>To install `exiftool` enter the following in a terminal:
+<br>
+````
+sudo apt-get install exiftool
+````
 
 ### Easy setup:
 With Apache 2.4, easiest setup is to symlink `htdocs` to the folder where you keep your music files.

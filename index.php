@@ -1,5 +1,7 @@
 <?php
 //error_reporting(E_ALL);
+$showBitrate=true; //set to true to show bitrate, and install 'exiftool', check the README.md
+$versionString="v0.99b";
 if(isset($_GET["folder"]))
 {
   $path=rawurldecode($_GET["folder"]);
@@ -248,7 +250,7 @@ a{
 <div id="navList" class="noselect"></div>
 <div id="playList" class="noselect"></div>
 <div id="playerControls" class="noselect">
-<div id="currentPlaying"><a href="https://github.com/CelliesProjects/html5_audioplayer" target="_blank">html5_audioplayer v0.9</a></div>
+<div id="currentPlaying"><a href="https://github.com/CelliesProjects/html5_audioplayer" target="_blank">html5_audioplayer <?php echo $versionString ?></a></div>
 <div id="controlArea"><img id="previousButton" class="actionIcon" src="?icon=previous"><img id="playButton" class="actionIcon" src="?icon=play"><img id="nextButton" class="actionIcon" src="?icon=next"><input type="range" min="0" max="0" value="0" class="" id="slider"><p id="currentTime"></p><img id="clearList" class="actionIcon" src="?icon=clearlist"></div>
 <audio controls autoplay id="player">Your browser does not support the audio element.</audio>
 <script>
@@ -461,6 +463,7 @@ $(document).ready( function()
     var nowPlaying=player.src;
     if($('.playListLink').eq(currentSong).data('path')!=undefined)thisSong=encodeURIComponent($('.playListLink').eq(currentSong).data('path'))+'/';
     thisSong+=encodeURIComponent($('.playListLink').eq(currentSong).text());
+<?php if($showBitrate):?>
     $.get('?bitrate='+thisSong,function(){
     })
     .done(function(data){
@@ -469,6 +472,7 @@ $(document).ready( function()
     .fail(function(){
       console.log('error getting bitrate');
     });
+<?php endif;?>
   });
 
   player.addEventListener('playing',function()
