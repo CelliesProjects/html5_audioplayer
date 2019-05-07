@@ -341,6 +341,7 @@ $(document).ready( function()
 
   $('body').on('input','#slider',function()
   {
+    if ( player.paused ) return;
     player.currentTime=this.value;
   });
 
