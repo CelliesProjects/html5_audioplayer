@@ -1,17 +1,17 @@
 <?php
 //error_reporting(E_ALL);
-$showBitrate=true; //set to true to show bitrate, and install 'exiftool', check the README.md
+$showBitrate=true; //set to true to show bitrate,and install 'exiftool',check the README.md
 $versionString="v0.99b";
 if(isset($_GET["folder"]))
 {
   $path=rawurldecode($_GET["folder"]);
   if(strpos($path,"..")!==false)die();        //no folder traversing
-  if(substr($path,0,1)==="/")$path = '';      //no root folder access
+  if(substr($path,0,1)==="/")$path='';      //no root folder access
 
   if($path<>''){
     $path=$path.'/';
     if(!file_exists($path)){
-      header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found", true,404);
+      header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found",true,404);
       echo "Requested resource could not be found.";
       die();
     }
@@ -41,7 +41,7 @@ if(isset($_GET["bitrate"]))
 if(isset($_GET["icon"]))
 {
   $icon=htmlspecialchars($_GET["icon"]);
-  $header="Content-Type: image/svg+xml";
+  $header="Content-Type:image/svg+xml";
   if($icon=="delete"){
     header($header);
     echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"/><path fill="none" d="M0 0h24v24H0V0z"/></svg>';
@@ -97,13 +97,13 @@ if(isset($_GET["icon"]))
     die();
   }
 }
-if(count($_GET)) die('ERROR unknown request.');
+if(count($_GET))die('ERROR unknown request.');
 ?><!doctype HTML>
 <html lang="en">
 <head>
 <title><?php $_SERVER['HTTP_HOST'] ?></title>
 <meta charset="utf-8">
-<meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1.0, maximum-scale=.7, user-scalable=no">
+<meta name="viewport" content="minimal-ui,width=device-width,initial-scale=1.0,maximum-scale=.7,user-scalable=no">
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">  <!--prevent favicon requests-->
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">  <!-- https://fonts.google.com/specimen/Roboto?selection.family=Roboto -->
 <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -155,7 +155,7 @@ a{
   width:50%;
   overflow-y:auto;
 }
-#upLink, .fileLink, .folderLink{
+#upLink,.fileLink,.folderLink{
   cursor:pointer;
   margin:5px 0;
   background-color:grey;
@@ -168,7 +168,7 @@ a{
 .fileLink{
   color:white;
 }
-#upLink:hover, .fileLink:hover, .folderLink:hover{
+#upLink:hover,.fileLink:hover,.folderLink:hover{
   background-color:black;
 }
 .playListLink{
@@ -182,7 +182,7 @@ a{
   display:flex;
   align-items:center;
 }
-.folderIcon, .actionIcon{
+.folderIcon,.actionIcon{
   background-color:red;
   margin:0 15px 0 0;
   min-width:40px;
@@ -240,7 +240,7 @@ a{
      -khtml-user-select:none; /* Konqueror HTML */
        -moz-user-select:none; /* Firefox */
         -ms-user-select:none; /* Internet Explorer/Edge */
-            user-select:none; /* Non-prefixed version, currently
+            user-select:none; /* Non-prefixed version,currently
                                   supported by Chrome and Opera */
 }
 </style>
@@ -254,26 +254,23 @@ a{
 <div id="controlArea"><img id="previousButton" class="actionIcon" src="?icon=previous"><img id="playButton" class="actionIcon" src="?icon=play"><img id="nextButton" class="actionIcon" src="?icon=next"><input type="range" min="0" max="0" value="0" class="" id="slider"><p id="currentTime"></p><img id="clearList" class="actionIcon" src="?icon=clearlist"></div>
 <audio controls autoplay id="player">Your browser does not support the audio element.</audio>
 <script>
-$(document).ready( function()
-{
+$(document).ready(function(){
   const scriptUrl='?folder=';
   var currentFolder='';
   var currentSong=undefined;
   var player=document.getElementById('player');
-  var scrollPos = []; //array to keep track of nested folders
+  var scrollPos=[]; //array to keep track of nested folders
 
-  $('#navList, #playList').css({"bottom":$('#playerControls').height()});
+  $('#navList,#playList').css({"bottom":$('#playerControls').height()});
   updateNavList('',true);
 
-  function updatePlayList()
-  {
+  function updatePlayList(){
     $('.playListLink').css('background-color','grey');
-    if( currentSong!==undefined)
+    if(currentSong!==undefined)
       $('.playListLink').eq(currentSong).css('background-color','black');
   }
 
-  function updateNavList(folder,restoreScroll)
-  {
+  function updateNavList(folder,restoreScroll){
     $.get(scriptUrl+encodeURIComponent(folder),function(){
     })
     .done(function(data){
@@ -291,38 +288,34 @@ $(document).ready( function()
     });
   };
 
-  function resetPlayer()
-  {
+  function resetPlayer(){
     player.src='';
     slider.value=0;
     $('#currentPlaying').html('&nbsp;');
     $('#currentTime').html('');
   }
 
-  $('body').on('click','#upLink',function()
-  {
+  $('body').on('click','#upLink',function(){
     $('#navList').css({"opacity":0.5});
     $('#currentPath').html("Loading...");
     if(currentFolder.includes('/'))
-      currentFolder=currentFolder.split('/').slice(0, -1).join('/');
+      currentFolder=currentFolder.split('/').slice(0,-1).join('/');
     else
       currentFolder='';
     updateNavList(currentFolder,true);
   });
 
-  $('body').on('click','.folderLink',function()
-  {
+  $('body').on('click','.folderLink',function(){
     $('#currentPath').html("Loading...");
     $('#navList').css({"opacity":0.5});
     scrollPos.push($('#navList').scrollTop()); //push on stack
     var newFolder=currentFolder;
-    if(newFolder) newFolder+='/';
+    if(newFolder)newFolder+='/';
     newFolder+=$(this).text();
     updateNavList(newFolder);
   });
 
-  $('body').on('click','.fileLink',function()
-  {
+  $('body').on('click','.fileLink',function(){
     $('#playList').append('<p class="playListLink" data-path="'+currentFolder+'"><img class="deleteButton folderIcon" src="?icon=delete">'+$(this).text()+'</p>');
 
     if(player.paused){
@@ -332,23 +325,19 @@ $(document).ready( function()
     }
   });
 
-  $('body').on('click','.playListLink',function()
-  {
+  $('body').on('click','.playListLink',function(){
     currentSong=$(this).index('.playListLink');
     player.src=encodeURI($(this).data('path')+'/'+$(this).text());
     updatePlayList();
   });
 
-  $('body').on('input','#slider',function()
-  {
-    if ( player.paused ) return;
+  $('body').on('input','#slider',function(){
+    if(player.paused)return;
     player.currentTime=this.value;
   });
 
-  $('body').on('click','.deleteButton',function(e)
-  {
-    if(currentSong==$(this).parent().index())
-    {
+  $('body').on('click','.deleteButton',function(e){
+    if(currentSong==$(this).parent().index()){
       player.pause();
       resetPlayer();
       currentSong=undefined;
@@ -359,8 +348,7 @@ $(document).ready( function()
     e.stopPropagation();
   });
 
-  $('body').on('click','.saveButton',function(e)
-  {
+  $('body').on('click','.saveButton',function(e){
     const a=document.createElement("a");
     a.style.display="none";
     document.body.appendChild(a);
@@ -372,14 +360,11 @@ $(document).ready( function()
     e.stopPropagation();
   });
 
-  $('body').on('click','.addFolder',function(e)
-  {
+  $('body').on('click','.addFolder',function(e){
     var folderToAdd='';
-    if(currentFolder) folderToAdd=currentFolder+'/';
+    if(currentFolder)folderToAdd=currentFolder+'/';
     folderToAdd+=$(this).parent().text();
-    $.get(scriptUrl+encodeURIComponent(folderToAdd),function(data){
-      //alert( "success" );
-    })
+    $.get(scriptUrl+encodeURIComponent(folderToAdd))
     .done(function(data){
       //make an invisible navList
       const nList=document.createElement("div");
@@ -393,7 +378,7 @@ $(document).ready( function()
         $('#playList').append('<p class="playListLink" data-path="'+folderToAdd+'"><img class="deleteButton folderIcon" src="?icon=delete">'+$(this).text()+'</p>');
       });
       document.body.removeChild(nList);
-      if(player.paused) $('.playListLink').eq(songBeforeAdd).click();
+      if(player.paused)$('.playListLink').eq(songBeforeAdd).click();
     })
     .fail(function(){
       $('#currentPath').html("ERROR! Unable to add "+folderToAdd);
@@ -401,14 +386,12 @@ $(document).ready( function()
     e.stopPropagation();
   });
 
-  $('body').on('click','#playButton',function()
-  {
+  $('body').on('click','#playButton',function(){
     if(player.paused&&currentSong!==undefined)player.play();
     else player.pause();
   });
 
-  $('body').on('click','#previousButton',function()
-  {
+  $('body').on('click','#previousButton',function(){
     if(currentSong>0){
       currentSong--;
       updatePlayList();
@@ -416,8 +399,7 @@ $(document).ready( function()
     }
   });
 
-  $('body').on('click','#nextButton',function()
-  {
+  $('body').on('click','#nextButton',function(){
     if(currentSong<$('.playListLink').length-1){
       currentSong++;
       updatePlayList();
@@ -425,24 +407,21 @@ $(document).ready( function()
     }
   });
 
-  $('body').on('click','#clearList',function()
-  {
+  $('body').on('click','#clearList',function(){
     player.pause();
     resetPlayer();
     currentSong=undefined;
     $('#playList').html('');
   });
 
-  $('body').keypress(function(e)
-  {
+  $('body').keypress(function(e){
     if(e.key===" "){
       playButton.click();
       e.preventDefault();
     }
   });
 
-  player.addEventListener('ended',function()
-  {
+  player.addEventListener('ended',function(){
     $('#currentTime').html();
     if(currentSong<$('.playListLink').length-1){
       currentSong++;
@@ -455,8 +434,7 @@ $(document).ready( function()
     updatePlayList();
   });
 
-  player.addEventListener('play',function()
-  {
+  player.addEventListener('play',function(){
     if(player.currentTime!==0)return;
     $('#currentPlaying').html($('.playListLink').eq(currentSong).text());
     slider.max=player.duration;
@@ -465,37 +443,31 @@ $(document).ready( function()
     if($('.playListLink').eq(currentSong).data('path')!=undefined)thisSong=encodeURIComponent($('.playListLink').eq(currentSong).data('path'))+'/';
     thisSong+=encodeURIComponent($('.playListLink').eq(currentSong).text());
 <?php if($showBitrate):?>
-    $.get('?bitrate='+thisSong,function(){
-    })
+    $.get('?bitrate='+thisSong)
     .done(function(data){
-      if(data&&nowPlaying==player.src) $('#currentPlaying').append(' - '+data);
+      if(data&&nowPlaying==player.src)$('#currentPlaying').append(' - '+data);
     })
-    .fail(function(){
-      console.log('error getting bitrate');
-    });
+    .fail(function(){console.log('error getting bitrate');});
 <?php endif;?>
   });
 
-  player.addEventListener('playing',function()
-  {
+  player.addEventListener('playing',function(){
     $('#playButton').attr("src","?icon=pause");
   });
 
-  player.addEventListener('pause',function()
-  {
+  player.addEventListener('pause',function(){
     $('#playButton').attr("src","?icon=play");
   });
 
-  player.addEventListener('timeupdate',function()
-  {
-    if (player.paused) return;
+  player.addEventListener('timeupdate',function(){
+    if(player.paused)return;
     slider.value=player.currentTime;
-    var now = new Date(null);
+    var now=new Date(null);
     now.setSeconds(player.currentTime);
-    var currentTime = now.toISOString().substr(11, 8);
-    var total = new Date(null);
+    var currentTime=now.toISOString().substr(11,8);
+    var total=new Date(null);
     total.setSeconds(player.duration);
-    var duration = total.toISOString().substr(11, 8);
+    var duration=total.toISOString().substr(11,8);
     $('#currentTime').html(currentTime+"/"+duration);
   });
 });
