@@ -5,8 +5,8 @@ $versionString="v1.0.0";
 if(isset($_GET["folder"]))
 {
   $path=rawurldecode($_GET["folder"]);
-  if(strpos($path,"..")!==false)die();        //no folder traversing
-  if(substr($path,0,1)==="/")$path='';      //no root folder access
+  if(strpos($path,"..")!==false)die();//no folder traversing
+  if(substr($path,0,1)==="/")$path='';//no root folder access
 
   if($path<>''){
     $path=$path.'/';
@@ -244,222 +244,221 @@ a{
 <div id="controlArea"><img id="previousButton" class="actionIcon" src="?icon=previous"><img id="playButton" class="actionIcon" src="?icon=play"><img id="nextButton" class="actionIcon" src="?icon=next"><input type="range" min="0" max="0" value="0" class="" id="slider"><p id="currentTime"></p><img id="clearList" class="actionIcon" src="?icon=clearlist"></div>
 <audio controls autoplay id="player">Your browser does not support the audio element.</audio>
 <script>
+const scriptUrl='?folder=';
+var currentFolder='';
+var currentSong=undefined;
+var player=document.getElementById('player');
+var scrollPos=[]; //array to keep track of nested folders
 $(document).ready(function(){
-  const scriptUrl='?folder=';
-  var currentFolder='';
-  var currentSong=undefined;
-  var player=document.getElementById('player');
-  var scrollPos=[]; //array to keep track of nested folders
-
   $('#navList,#playList').css({"bottom":$('#playerControls').height()});
   updateNavList('',true);
+});
 
-  function updatePlayList(){
-    $('.playListLink').css('background-color','grey');
-    if(currentSong!==undefined)
-      $('.playListLink').eq(currentSong).css('background-color','black');
-  }
+function updatePlayList(){
+  $('.playListLink').css('background-color','grey');
+  if(currentSong!==undefined)
+    $('.playListLink').eq(currentSong).css('background-color','black');
+}
 
-  function updateNavList(folder,restoreScroll){
-    $.get(scriptUrl+encodeURIComponent(folder),function(){
-    })
-    .done(function(data){
-      $('#currentPath').html(folder);
-      currentFolder=folder;
-      $('#navList').html(data).scrollTop(0);
-    })
-    .fail(function(){
-      $('#currentPath').html("ERROR! Unable to access "+folder);
-    })
-    .always(function(){
-      if(restoreScroll)
-        $('#navList').scrollTop(scrollPos.pop()); //pop from stack
-      $('#navList').css({"opacity":1});
-    });
-  };
-
-  function resetPlayer(){
-    player.src='';
-    slider.value=0;
-    $('#currentPlaying').html('&nbsp;');
-    $('#currentTime').html('');
-  }
-
-  $('body').on('click','#upLink',function(){
-    $('#navList').css({"opacity":0.5});
-    $('#currentPath').html("Loading...");
-    if(currentFolder.includes('/'))
-      currentFolder=currentFolder.split('/').slice(0,-1).join('/');
-    else
-      currentFolder='';
-    updateNavList(currentFolder,true);
+function updateNavList(folder,restoreScroll){
+  $.get(scriptUrl+encodeURIComponent(folder),function(){
+  })
+  .done(function(data){
+    $('#currentPath').html(folder);
+    currentFolder=folder;
+    $('#navList').html(data).scrollTop(0);
+  })
+  .fail(function(){
+    $('#currentPath').html("ERROR! Unable to access "+folder);
+  })
+  .always(function(){
+    if(restoreScroll)
+      $('#navList').scrollTop(scrollPos.pop()); //pop from stack
+    $('#navList').css({"opacity":1});
   });
+};
 
-  $('body').on('click','.folderLink',function(){
-    $('#currentPath').html("Loading...");
-    $('#navList').css({"opacity":0.5});
-    scrollPos.push($('#navList').scrollTop()); //push on stack
-    var newFolder=currentFolder;
-    if(newFolder)newFolder+='/';
-    newFolder+=$(this).text();
-    updateNavList(newFolder);
-  });
+function resetPlayer(){
+  player.src='';
+  slider.value=0;
+  $('#currentPlaying').html('&nbsp;');
+  $('#currentTime').html('');
+}
 
-  $('body').on('click','.fileLink',function(){
-    $('#playList').append('<p class="playListLink" data-path="'+currentFolder+'"><img class="deleteButton folderIcon" src="?icon=delete">'+$(this).text()+'</p>');
+$('body').on('click','#upLink',function(){
+  $('#navList').css({"opacity":0.5});
+  $('#currentPath').html("Loading...");
+  if(currentFolder.includes('/'))
+    currentFolder=currentFolder.split('/').slice(0,-1).join('/');
+  else
+    currentFolder='';
+  updateNavList(currentFolder,true);
+});
 
-    if(player.paused){
-      currentSong=$('.playListLink').length-1;
-      $('.playListLink').eq(currentSong).click();
-      updatePlayList();
-    }
-  });
+$('body').on('click','.folderLink',function(){
+  $('#currentPath').html("Loading...");
+  $('#navList').css({"opacity":0.5});
+  scrollPos.push($('#navList').scrollTop()); //push on stack
+  var newFolder=currentFolder;
+  if(newFolder)newFolder+='/';
+  newFolder+=$(this).text();
+  updateNavList(newFolder);
+});
 
-  $('body').on('click','.playListLink',function(){
-    currentSong=$(this).index('.playListLink');
-    player.src=encodeURI($(this).data('path')+'/'+$(this).text());
+$('body').on('click','.fileLink',function(){
+  $('#playList').append('<p class="playListLink" data-path="'+currentFolder+'"><img class="deleteButton folderIcon" src="?icon=delete">'+$(this).text()+'</p>');
+
+  if(player.paused){
+    currentSong=$('.playListLink').length-1;
+    $('.playListLink').eq(currentSong).click();
     updatePlayList();
-  });
+  }
+});
 
-  $('body').on('input','#slider',function(){
-    if(player.paused)return;
-    player.currentTime=this.value;
-  });
+$('body').on('click','.playListLink',function(){
+  currentSong=$(this).index('.playListLink');
+  player.src=encodeURI($(this).data('path')+'/'+$(this).text());
+  updatePlayList();
+});
 
-  $('body').on('click','.deleteButton',function(e){
-    if(currentSong==$(this).parent().index()){
-      player.pause();
-      resetPlayer();
-      currentSong=undefined;
-    }
-    if(currentSong>$(this).parent().index())currentSong--;
-    $(this).parent().remove();
-    updatePlayList;
-    e.stopPropagation();
-  });
+$('body').on('input','#slider',function(){
+  if(player.paused)return;
+  player.currentTime=this.value;
+});
 
-  $('body').on('click','.saveButton',function(e){
-    const a=document.createElement("a");
-    a.style.display="none";
-    document.body.appendChild(a);
-    a.href=currentFolder+'/'+$(this).parent().text();
-    a.setAttribute("download",$(this).parent().text());
-    a.click();
-    window.URL.revokeObjectURL(a.href);
-    document.body.removeChild(a);
-    e.stopPropagation();
-  });
-
-  $('body').on('click','.addFolder',function(e){
-    var folderToAdd='';
-    if(currentFolder)folderToAdd=currentFolder+'/';
-    folderToAdd+=$(this).parent().text();
-    $.get(scriptUrl+encodeURIComponent(folderToAdd))
-    .done(function(data){
-      //make an invisible navList
-      const nList=document.createElement("div");
-      nList.style.display="none";
-      nList.id="invisFolder";
-      document.body.appendChild(nList);
-      $(nList).html(data);
-      //add each .fileLink from the invisible navList
-      var songBeforeAdd=$('.playListLink').length;
-      $("#invisFolder .fileLink").each(function(index){
-        $('#playList').append('<p class="playListLink" data-path="'+folderToAdd+'"><img class="deleteButton folderIcon" src="?icon=delete">'+$(this).text()+'</p>');
-      });
-      document.body.removeChild(nList);
-      if(player.paused)$('.playListLink').eq(songBeforeAdd).click();
-    })
-    .fail(function(){
-      $('#currentPath').html("ERROR! Unable to add "+folderToAdd);
-    });
-    e.stopPropagation();
-  });
-
-  $('body').on('click','#playButton',function(){
-    if(player.paused&&currentSong!==undefined)player.play();
-    else player.pause();
-  });
-
-  $('body').on('click','#previousButton',function(){
-    if(currentSong>0){
-      currentSong--;
-      updatePlayList();
-      $('.playListLink').eq (currentSong).click();
-    }
-  });
-
-  $('body').on('click','#nextButton',function(){
-    if(currentSong<$('.playListLink').length-1){
-      currentSong++;
-      updatePlayList();
-      $('.playListLink').eq (currentSong).click();
-    }
-  });
-
-  $('body').on('click','#clearList',function(){
+$('body').on('click','.deleteButton',function(e){
+  if(currentSong==$(this).parent().index()){
     player.pause();
     resetPlayer();
     currentSong=undefined;
-    $('#playList').html('');
-  });
+  }
+  if(currentSong>$(this).parent().index())currentSong--;
+  $(this).parent().remove();
+  updatePlayList;
+  e.stopPropagation();
+});
 
-  $('body').keypress(function(e){
-    if(e.key===" "){
-      playButton.click();
-      e.preventDefault();
-    }
-  });
+$('body').on('click','.saveButton',function(e){
+  const a=document.createElement("a");
+  a.style.display="none";
+  document.body.appendChild(a);
+  a.href=currentFolder+'/'+$(this).parent().text();
+  a.setAttribute("download",$(this).parent().text());
+  a.click();
+  window.URL.revokeObjectURL(a.href);
+  document.body.removeChild(a);
+  e.stopPropagation();
+});
 
-  player.addEventListener('ended',function(){
-    $('#currentTime').html();
-    if(currentSong<$('.playListLink').length-1){
-      currentSong++;
-      updatePlayList();
-      $('.playListLink').eq(currentSong).click();
-      return;
-    }
-    currentSong=undefined;
-    resetPlayer();
+$('body').on('click','.addFolder',function(e){
+  var folderToAdd='';
+  if(currentFolder)folderToAdd=currentFolder+'/';
+  folderToAdd+=$(this).parent().text();
+  $.get(scriptUrl+encodeURIComponent(folderToAdd))
+  .done(function(data){
+    //make an invisible navList
+    const nList=document.createElement("div");
+    nList.style.display="none";
+    nList.id="invisFolder";
+    document.body.appendChild(nList);
+    $(nList).html(data);
+    //add each .fileLink from the invisible navList
+    var songBeforeAdd=$('.playListLink').length;
+    $("#invisFolder .fileLink").each(function(index){
+      $('#playList').append('<p class="playListLink" data-path="'+folderToAdd+'"><img class="deleteButton folderIcon" src="?icon=delete">'+$(this).text()+'</p>');
+    });
+    document.body.removeChild(nList);
+    if(player.paused)$('.playListLink').eq(songBeforeAdd).click();
+  })
+  .fail(function(){
+    $('#currentPath').html("ERROR! Unable to add "+folderToAdd);
+  });
+  e.stopPropagation();
+});
+
+$('body').on('click','#playButton',function(){
+  if(player.paused&&currentSong!==undefined)player.play();
+  else player.pause();
+});
+
+$('body').on('click','#previousButton',function(){
+  if(currentSong>0){
+    currentSong--;
     updatePlayList();
-  });
+    $('.playListLink').eq (currentSong).click();
+  }
+});
 
-  player.addEventListener('play',function(){
-    if(player.currentTime!==0)return;
-    $('#currentPlaying').html($('.playListLink').eq(currentSong).text());
-    slider.max=player.duration;
-    var thisSong;
-    var nowPlaying=player.src;
-    if($('.playListLink').eq(currentSong).data('path')!=undefined)thisSong=encodeURIComponent($('.playListLink').eq(currentSong).data('path'))+'/';
-    thisSong+=encodeURIComponent($('.playListLink').eq(currentSong).text());
+$('body').on('click','#nextButton',function(){
+  if(currentSong<$('.playListLink').length-1){
+    currentSong++;
+    updatePlayList();
+    $('.playListLink').eq (currentSong).click();
+  }
+});
+
+$('body').on('click','#clearList',function(){
+  player.pause();
+  resetPlayer();
+  currentSong=undefined;
+  $('#playList').html('');
+});
+
+$('body').keypress(function(e){
+  if(e.key===" "){
+    playButton.click();
+    e.preventDefault();
+  }
+});
+
+player.addEventListener('ended',function(){
+  $('#currentTime').html();
+  if(currentSong<$('.playListLink').length-1){
+    currentSong++;
+    updatePlayList();
+    $('.playListLink').eq(currentSong).click();
+    return;
+  }
+  currentSong=undefined;
+  resetPlayer();
+  updatePlayList();
+});
+
+player.addEventListener('play',function(){
+  if(player.currentTime!==0)return;
+  $('#currentPlaying').html($('.playListLink').eq(currentSong).text());
+  slider.max=player.duration;
+  var thisSong;
+  var nowPlaying=player.src;
+  if($('.playListLink').eq(currentSong).data('path')!=undefined)thisSong=encodeURIComponent($('.playListLink').eq(currentSong).data('path'))+'/';
+  thisSong+=encodeURIComponent($('.playListLink').eq(currentSong).text());
 <?php if($showBitrate):?>
-    $.get('?bitrate='+thisSong)
-    .done(function(data){
-      if(data&&nowPlaying==player.src)$('#currentPlaying').append(' - '+data);
-    })
-    .fail(function(){console.log('error getting bitrate');});
+  $.get('?bitrate='+thisSong)
+  .done(function(data){
+    if(data&&nowPlaying==player.src)$('#currentPlaying').append(' - '+data);
+  })
+  .fail(function(){console.log('error getting bitrate');});
 <?php endif;?>
-  });
+});
 
-  player.addEventListener('playing',function(){
-    $('#playButton').attr("src","?icon=pause");
-  });
+player.addEventListener('playing',function(){
+  $('#playButton').attr("src","?icon=pause");
+});
 
-  player.addEventListener('pause',function(){
-    $('#playButton').attr("src","?icon=play");
-  });
+player.addEventListener('pause',function(){
+  $('#playButton').attr("src","?icon=play");
+});
 
-  player.addEventListener('timeupdate',function(){
-    if(player.paused)return;
-    slider.value=player.currentTime;
-    var now=new Date(null);
-    now.setSeconds(player.currentTime);
-    var currentTime=now.toISOString().substr(11,8);
-    var total=new Date(null);
-    total.setSeconds(player.duration);
-    var duration=total.toISOString().substr(11,8);
-    $('#currentTime').html(currentTime+"/"+duration);
-  });
+player.addEventListener('timeupdate',function(){
+  if(player.paused)return;
+  slider.value=player.currentTime;
+  var now=new Date(null);
+  now.setSeconds(player.currentTime);
+  var currentTime=now.toISOString().substr(11,8);
+  var total=new Date(null);
+  total.setSeconds(player.duration);
+  var duration=total.toISOString().substr(11,8);
+  $('#currentTime').html(currentTime+"/"+duration);
 });
 </script>
 </body>
