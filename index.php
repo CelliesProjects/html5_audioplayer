@@ -244,7 +244,7 @@ a{
 <div id="controlArea"><img id="previousButton" class="actionIcon" src="?icon=previous"><img id="playButton" class="actionIcon" src="?icon=play"><img id="nextButton" class="actionIcon" src="?icon=next"><input type="range" min="0" max="0" value="0" class="" id="slider"><p id="currentTime"></p><img id="clearList" class="actionIcon" src="?icon=clearlist"></div>
 <audio controls autoplay id="player">Your browser does not support the audio element.</audio>
 <script>
-const scriptUrl='?folder=';
+const folderUrl='?folder=';
 var currentFolder='';
 var currentSong=undefined;
 var player=document.getElementById('player');
@@ -261,7 +261,7 @@ function updatePlayList(){
 }
 
 function updateNavList(folder,restoreScroll){
-  $.get(scriptUrl+encodeURIComponent(folder),function(){
+  $.get(folderUrl+encodeURIComponent(folder),function(){
   })
   .done(function(data){
     $('#currentPath').html(folder);
@@ -354,7 +354,7 @@ $('body').on('click','.addFolder',function(e){
   var folderToAdd='';
   if(currentFolder)folderToAdd=currentFolder+'/';
   folderToAdd+=$(this).parent().text();
-  $.get(scriptUrl+encodeURIComponent(folderToAdd))
+  $.get(folderUrl+encodeURIComponent(folderToAdd))
   .done(function(data){
     //make an invisible navList
     const nList=document.createElement("div");
