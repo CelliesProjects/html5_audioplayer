@@ -1,7 +1,7 @@
 <?php
 //error_reporting(E_ALL);
 $showBitrate=true; //set to true to show bitrate,and install 'exiftool',check the README.md
-$versionString="v1.0.0";
+$versionString="v1.0.1";
 if(isset($_GET["folder"])){
   $path=rawurldecode($_GET["folder"]);
   if(strpos($path,"..")!==false)die();//no folder traversing
