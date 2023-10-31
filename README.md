@@ -1,7 +1,5 @@
 # html5_audioplayer
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4019b3a1f7ce4d34b5debe6647b1b22e)](https://app.codacy.com/manual/CelliesProjects/html5_audioplayer?utm_source=github.com&utm_medium=referral&utm_content=CelliesProjects/html5_audioplayer&utm_campaign=Badge_Grade_Dashboard)
-
 html5_audioplayer provides an easy way to stream the music from your lamp server.
 <br>It is intended as a replacement for the Apache plugin `mod_musicindex` which was a pain to install and is not maintained anymore.
 <br><br>html5_audioplayer is a simple one-file drop-in musicplayer.
